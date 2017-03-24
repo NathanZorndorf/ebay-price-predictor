@@ -1,0 +1,13 @@
+# Enter a postgres database 
+$ psql [dbname]
+
+# Enter postgres database with username postgres
+$ psql -U postgres 
+
+# How to check users 
+postgres=# \du
+
+postgres=# CREATE USER nathan CREATEDB
+
+
+

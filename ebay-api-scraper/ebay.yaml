@@ -1,0 +1,34 @@
+# eBay SDK Defaults
+
+name: ebay_api_config
+
+# Trading API Sandbox - https://www.x.com/developers/ebay/products/trading-api
+api.sandbox.ebay.com:
+    compatibility: 719
+    appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    certid: PRD-bed4d450833b-99a1-4224-9e6e-1e94
+    devid: 0cc86638-a322-4390-8da7-76b3800fa795
+    token: AgAAAA**AQAAAA**aAAAAA**yO/RWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkIahDJWBqQ+dj6x9nY+seQ**jaoDAA**AAMAAA**1nvC7MyyoPnKbCiKLRFPOw4kdtLxsj04ZhZz85P15OQgKol4c3uBlaqDvzucVMe427r9T93vTBZVhZFn0vpWP08kYe374UD/VXzwQPAiDFBBbrKKE88idiqhrVSYRl9xcBLGE4wpanWHYoDs3AQ8go17il6XAfFYry+iHJIMEDKo4ikwhIRp7AVmhqt4K0+U1RtJsxjxYxWnH0GLrWuwSFWpu/XnitRibO5OC/o0p9ryf2v7suR2lSUbQ2VSqBXDMJG1I5vcfT+118lzaU3mpVugIU6dG2+k2v+t/IswpTvg9pv/XD1U5usgwWJWQStZG/6kT358OqkhPwJF56HtK31vEDnsL9SQ+p9JY/pIcoQIz1u6XaYlZfersZvwAJLgsF44jzgu+Y8WUUnvCMH9v7tNZ/2zhY/rIuBWrK5GuobpZ2kiu5SYiBBuJeWiBysvsAGWuS9a+VzImG1b+s/jQJGyiuUmjs8aCj5KzDWjSTvbBzWpsHWQaVRCrVqiZiv+mJ7hRqcpXNXUiNIzKBVX9tfEiYnC6gykTl5VMqLBzM26eQt1R5fnyWItbXS5r0+pm1otJi+YdFxm8d+b4174YMmCIBdjv9ceJL7uS/ssNnnVeqk3FptiNFlW9tf+PYt9KfysCi6N7NtRRWH4/oQ6Zpj+4RSFc0XJsTBkey1FNcm4H4zSz7cqmnx4i695nA3HaMDqASKsNIUfzTMjN2BGoTT2xFmHef9VriHDGcwqgCOPSbuWeuuTjbTUr6u0jNFj
+
+# Trading API - https://www.x.com/developers/ebay/products/trading-api
+api.ebay.com:
+    version: 719
+    appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    certid: PRD-bed4d450833b-99a1-4224-9e6e-1e94
+    devid: 0cc86638-a322-4390-8da7-76b3800fa795
+    token: AgAAAA**AQAAAA**aAAAAA**yO/RWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkIahDJWBqQ+dj6x9nY+seQ**jaoDAA**AAMAAA**1nvC7MyyoPnKbCiKLRFPOw4kdtLxsj04ZhZz85P15OQgKol4c3uBlaqDvzucVMe427r9T93vTBZVhZFn0vpWP08kYe374UD/VXzwQPAiDFBBbrKKE88idiqhrVSYRl9xcBLGE4wpanWHYoDs3AQ8go17il6XAfFYry+iHJIMEDKo4ikwhIRp7AVmhqt4K0+U1RtJsxjxYxWnH0GLrWuwSFWpu/XnitRibO5OC/o0p9ryf2v7suR2lSUbQ2VSqBXDMJG1I5vcfT+118lzaU3mpVugIU6dG2+k2v+t/IswpTvg9pv/XD1U5usgwWJWQStZG/6kT358OqkhPwJF56HtK31vEDnsL9SQ+p9JY/pIcoQIz1u6XaYlZfersZvwAJLgsF44jzgu+Y8WUUnvCMH9v7tNZ/2zhY/rIuBWrK5GuobpZ2kiu5SYiBBuJeWiBysvsAGWuS9a+VzImG1b+s/jQJGyiuUmjs8aCj5KzDWjSTvbBzWpsHWQaVRCrVqiZiv+mJ7hRqcpXNXUiNIzKBVX9tfEiYnC6gykTl5VMqLBzM26eQt1R5fnyWItbXS5r0+pm1otJi+YdFxm8d+b4174YMmCIBdjv9ceJL7uS/ssNnnVeqk3FptiNFlW9tf+PYt9KfysCi6N7NtRRWH4/oQ6Zpj+4RSFc0XJsTBkey1FNcm4H4zSz7cqmnx4i695nA3HaMDqASKsNIUfzTMjN2BGoTT2xFmHef9VriHDGcwqgCOPSbuWeuuTjbTUr6u0jNFj
+
+# Finding API - https://www.x.com/developers/ebay/products/finding-api
+svcs.ebay.com:
+    appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    version: 1.0.0
+
+# Shopping API - https://www.x.com/developers/ebay/products/shopping-api
+open.api.ebay.com:
+    appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    version: 671
+
+    # Optional affiliate tracking
+    # http://developer.ebay.com/DevZone/shopping/docs/Concepts/ShoppingAPI_FormatOverview.html#StandardURLParameters
+    trackingid: ENTER_YOUR_TRACKINGID_HERE
+    trackingpartnercode: ENTER_YOUR_PARTNERCODE_HERE 

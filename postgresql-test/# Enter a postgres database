@@ -1,0 +1,63 @@
+#------------- TERMINAL COMMANDS -------------#
+
+# Enter a postgres database 
+$ psql [dbname]
+
+# Enter a database called test-db1 with username nathan
+$ psql -U nathan test-db1
+
+# Enter postgres database with username postgres
+$ psql -U postgres postgres 
+
+
+
+#------------------ POSTGRES -----------------#
+#--- for running within postgres shell prompt ----#
+
+#--- How to check users 
+postgres=# \du
+
+#--- Check current user
+postgres=# select current_user;
+
+#--- Check current database 
+postgres=# select current_database();
+
+#--- Print a list of databases
+postgres=# \l
+
+#--- Create a database 
+postgres=# CREATE DATABASE dbname;
+
+#--- Print a list of tables
+postgres=# \d 
+
+#--- Print a description of a table 
+postgres=# \d tablename
+
+#--- Quit
+postgres=# \q
+
+
+#------------------ POSTGRES -----------------#
+#----------------- SQL COMMANDS --------------#
+
+#--- Delete, Drop a database 
+DROP DATABASE [IF EXISTS] name;
+
+#--- Create a user with permission to create databases 
+CREATE USER nathan CREATEDB
+
+#--- Create a table 
+
+
+#--- Insert data into a table 
+INSERT INTO tablename (col1, col2) VALUES (val1, val2);
+
+	# Example
+	INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (1, 'Nathan', 25, '735 edgemar', 50);
+
+
+
+
+
