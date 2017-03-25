@@ -4,11 +4,10 @@
 $ psql [dbname]
 
 # Enter a database called test-db1 with username nathan
-$ psql -U nathan test-db1
+$ psql -U nathan ebay
 
 # Enter postgres database with username postgres
 $ psql -U postgres postgres 
-
 
 
 #------------------ POSTGRES -----------------#
@@ -49,15 +48,14 @@ DROP DATABASE [IF EXISTS] name;
 CREATE USER nathan CREATEDB
 
 #--- Create a table 
-
+CREATE TABLE tablename 
 
 #--- Insert data into a table 
 INSERT INTO tablename (col1, col2) VALUES (val1, val2);
 
-	# Example
-	INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (1, 'Nathan', 25, '735 edgemar', 50);
 
-
+#--- Get the hour from a table 
+SELECT CAST(EXTRACT(DAY FROM colname) AS INT) FROM tablename;
 
 
 

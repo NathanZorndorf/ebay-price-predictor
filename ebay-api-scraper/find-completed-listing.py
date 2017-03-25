@@ -32,6 +32,7 @@ def init_options():
     (opts, args) = parser.parse_args()
     return opts, args
 
+
 def run(opts):
 
     try:
@@ -39,19 +40,20 @@ def run(opts):
                       config_file=opts.yaml, warnings=True)
 
         api_request = {
-            #'keywords': '',
+            'keywords': 'camera',
             #'CategoryId' : '181194', # vintage electronic keyboards
-            'CategoryId'  :  '31388', # digital cameras 
+            'CategoryId'  :  '625', # digital cameras 
             # https://developer.ebay.com/devzone/finding/CallRef/types/ItemFilterType.html
             # https://developer.ebay.com/devzone/finding/CallRef/extra/fndCmpltdItms.Rqst.tmFltr.nm.html
             'itemFilter': [
                 {'name': 'Condition', 'value': 'Used'},
                 {'name': 'LocatedIn', 'value': 'US'},
-                {'name': 'MinPrice',  'value': '10'}
+                {'name': 'MinPrice',  'value': '10'},
                 {'name': 'ListingType', 'value':'Auction'},
-                {'name': 'ListingType', 'value':'AuctionWithBIN'},
+                # {'name': 'ListingType', 'value':'AuctionWithBIN'},
                 {'name': 'HideDuplicateItems', 'value':'true'},
-                {'name': 'SellerBusinessType', 'value' : 'Private'}
+                {'name': 'SellerBusinessType', 'value' : 'Private'},
+                {'name': 'Currency', 'value':'USD'}
             ],
             # Use outputSelector to include more information in the response. 
             'outputSelector': [
@@ -71,19 +73,9 @@ def run(opts):
 
         dic = response.dict()
 
-        # print dic.keys() # ['ack', 'timestamp', 'version', 'searchResult', 'paginationOutput']
-        # print dic['searchResult'] # ['item', '_count']
-        # print  dic['searchResult']['item'][0].keys() # ['itemId', 'topRatedListing', 'globalId', 'title', 'country', 'primaryCategory', 'autoPay', 'galleryURL', 'shippingInfo', 'location', 'postalCode', 'returnsAccepted', 'viewItemURL', 'sellingStatus', 'paymentMethod', 'isMultiVariationListing', 'condition', 'listingInfo']
+        # print 'size of dict is {}\n'.format(sys.getsizeof(dic)) # size of default dict + pictureURLLarge is 280 bytes 
 
-        # print sys.getsizeof(dic) # size of default dict + pictureURLLarge is 280 bytes 
-
-        for item in dic['searchResult']['item']:
-            print 'listing title:\t\t', item['title']
-            print 'listing sale price($):\t', item['sellingStatus']['currentPrice']['value']
-            print 'image URL:\t', item['pictureURLLarge'], '\n'
-            print ''
-
-
+        # ------ CONNECT TO POSTGRES DATABSE ----- #
         dbname='test-db1'
         user='nathan'
         host='localhost'
@@ -96,18 +88,40 @@ def run(opts):
 
         cur = conn.cursor()
 
-        cur.execute()
+        # ------ STORE EBAY DATA IN TABLE ------ #
+        timestamp = dic['timestamp'] # Example : '2017-03-25T01:58:10.520Z'
 
-rows = cur.fetchall()
+        for key1,val1 in dic['searchResult']['item'][0].iteritems():
+            if type(val1) is dict:
+                for key2,val2 in val1.iteritems():
+                    if type(val2) is dict:
+                        for key3,val3 in val2.iteritems():
+                            print '{}.{}.{} : {}'.format(key1,key2,key3,val3)
+                            key = '.'.join([key1,key2,key3])
+                            insert_sql(key, val3, cur)
+                    else:
+                        print '{}.{} : {}'.format(key1,key2,val2)
+            else:
+                print '{} : {}\n'.format(key1, val1)
+
+        # ------ CLOSE CONNECTION TO DATABSE ----- #
+
+        cur.close()
+        conn.close()
 
     except ConnectionError as e:
         print(e)
         print(e.response.dict())
 
+def insert_sql(key,val, cursor):
+    cur.execute()
+    conn.commit()
+
+
 
 
 if __name__ == "__main__":
-    print 'connecting to database...'
+    # print 'connecting to database...'
 	print("Finding samples for SDK version %s" % ebaysdk.get_version())
 	(opts, args) = init_options()
 	run(opts)
