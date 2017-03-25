@@ -14,12 +14,13 @@ cur = conn.cursor()
 
 cur.execute('''
 	CREATE TABLE COMPLETED_ITEMS (
-	id 		INTEGER PRIMARY KEY,
-	itemId 				BIGINT,
-	topRatedListing 	BOOLEAN,
-	globalId			TEXT,
-	title				TEXT,
-	country				TEXT,
+	"id" 					SERIAL PRIMARY KEY,
+	"timestamp"				TIMESTAMP WITH TIME ZONE,
+	"itemId" 				BIGINT,
+	"topRatedListing" 		BOOLEAN,
+	"globalId"				TEXT,
+	"title"					TEXT,
+	"country"				TEXT,
 	
 	"primaryCategory.categoryId"		INTEGER,
 	"primaryCategory.categoryName"		TEXT,

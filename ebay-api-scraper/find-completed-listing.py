@@ -2,6 +2,8 @@ import os
 import sys
 from optparse import OptionParser
 import psycopg2
+from psycopg2.extensions import AsIs
+from collections import OrderedDict
 
 # The line below will add 
 sys.path.insert(0, '%s/../' % os.path.dirname(__file__))
@@ -75,21 +77,27 @@ def run(opts):
 
         # print 'size of dict is {}\n'.format(sys.getsizeof(dic)) # size of default dict + pictureURLLarge is 280 bytes 
 
+
         # ------ CONNECT TO POSTGRES DATABSE ----- #
         dbname='test-db1'
         user='nathan'
         host='localhost'
+        TABLE_NAME = 'completed_items'
 
         try:
             conn = psycopg2.connect("dbname={} user={} host={}".format(dbname, user, host))
             print '\nConnected to {} with user:{} on host:{}\n'.format(dbname, user, host)
         except:
-            print "I am unable to connect to the database"
+            print "Unable to connect to the database"
 
         cur = conn.cursor()
 
+
         # ------ STORE EBAY DATA IN TABLE ------ #
+        ebay_data_dict = OrderedDict()
+
         timestamp = dic['timestamp'] # Example : '2017-03-25T01:58:10.520Z'
+        ebay_data_dict['timestamp'] = timestamp # grab timestamp 
 
         for key1,val1 in dic['searchResult']['item'][0].iteritems():
             if type(val1) is dict:
@@ -98,26 +106,59 @@ def run(opts):
                         for key3,val3 in val2.iteritems():
                             print '{}.{}.{} : {}'.format(key1,key2,key3,val3)
                             key = '.'.join([key1,key2,key3])
-                            insert_sql(key, val3, cur)
+                            val = val3
+                            ebay_data_dict[key] = val
+                            # insert_sql(key, val3, cur)
                     else:
                         print '{}.{} : {}'.format(key1,key2,val2)
+                        key = '.'.join([key1,key2])
+                        val = val2
+                        ebay_data_dict[key] = val
+                        # insert_sql(key,val2)
             else:
                 print '{} : {}\n'.format(key1, val1)
+                key = key1
+                val = val1
+                ebay_data_dict[key] = val
+                # insert_sql(key,val2)
+
+        # remove entries we don't need
+        bad_keys = ["sellingStatus.convertedCurrentPrice.value", \
+        "sellingStatus.convertedCurrentPrice._currencyId",  \
+        "sellingStatus.currentPrice._currencyId", \
+        "shippingInfo.shippingServiceCost._currencyId", \
+        "storeInfo.storeURL", \
+        "storeInfo.storeName"]
+        for key in bad_keys:
+            ebay_data_dict.pop(key)
 
         # ------ CLOSE CONNECTION TO DATABSE ----- #
+        keys = ['"{}"'.format(key) for key in ebay_data_dict.keys()]
+        values = ebay_data_dict.values()
 
+        insert_statement = 'INSERT INTO {} (%s) values %s'.format(TABLE_NAME)
+
+        query = cur.mogrify(insert_statement, (AsIs(','.join(keys)), tuple(values)))
+        
+        cur.execute(query)
+
+        conn.commit()
         cur.close()
         conn.close()
+
 
     except ConnectionError as e:
         print(e)
         print(e.response.dict())
 
+
 def insert_sql(key,val, cursor):
+    SQL = '''
+    INSERT INTO %s (code, title, did, date_prod, kind)
+    VALUES ('T_601', 'Yojimbo', 106, '1961-06-16', 'Drama');
+    '''
     cur.execute()
     conn.commit()
-
-
 
 
 if __name__ == "__main__":

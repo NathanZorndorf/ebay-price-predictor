@@ -40,6 +40,8 @@ postgres=# \q
 
 #------------------ POSTGRES -----------------#
 #----------------- SQL COMMANDS --------------#
+#--- View column names in a table
+SELECT column_name from information_schema.columns where table_name ='your_table';
 
 #--- Delete, Drop a database 
 DROP DATABASE [IF EXISTS] name;
@@ -50,12 +52,22 @@ CREATE USER nathan CREATEDB
 #--- Create a table 
 CREATE TABLE tablename 
 
+#--- Drop a table
+DROP TABLE tablename
+
+#--- Create a primary key in your table 
+ALTER TABLE completed_items ADD COLUMN id SERIAL;
+
+#--- Drop a column
+ALTER TABLE tablename DROP COLUMN colname;
+
 #--- Insert data into a table 
 INSERT INTO tablename (col1, col2) VALUES (val1, val2);
-
 
 #--- Get the hour from a table 
 SELECT CAST(EXTRACT(DAY FROM colname) AS INT) FROM tablename;
 
-
+#------------------- SETTINGS ---------------#
+#--- toggle between wide/narrow output (print one column per line in the terminal!!)
+postgres=# \x on 
 
