@@ -55,6 +55,9 @@ CREATE TABLE tablename
 #--- Drop a table
 DROP TABLE tablename
 
+#--- delete all rows in a table
+TRUNCATE tablename;
+
 #--- Create a primary key in your table 
 ALTER TABLE completed_items ADD COLUMN id SERIAL;
 
@@ -64,8 +67,13 @@ ALTER TABLE tablename DROP COLUMN colname;
 #--- Insert data into a table 
 INSERT INTO tablename (col1, col2) VALUES (val1, val2);
 
+#------- SELECTION ------#
 #--- Get the hour from a table 
 SELECT CAST(EXTRACT(DAY FROM colname) AS INT) FROM tablename;
+
+#--- select a range of rows
+# Get rows 5 - 14
+SELECT * from tablename LIMIT 10 OFFSET 5; 
 
 #------------------- SETTINGS ---------------#
 #--- toggle between wide/narrow output (print one column per line in the terminal!!)

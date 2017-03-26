@@ -1,8 +1,19 @@
 import psycopg2
+import sys
 
-dbname='test-db1'
-user='nathan'
-host='localhost'
+numArgs = len(sys.argv)
+if numArgs < 1 or numArgs > 5:
+	print 'ERROR: Not enough arguments. Please input "host",user",dbname","tablename" as arguments.'
+	sys.exit()
+
+(host, user, dbname, tablename) = tuple(sys.argv[1:])
+
+# dbname='test-db1'
+# tablename='tablename'
+# user='nathan'
+# host='localhost'
+
+print (host, dbname, tablename,user)
 
 try:
     conn = psycopg2.connect("dbname={} user={} host={}".format(dbname, user, host))
@@ -13,17 +24,20 @@ except:
 cur = conn.cursor()
 
 cur.execute('''
-	CREATE TABLE COMPLETED_ITEMS (
+	CREATE TABLE {tablename} (
 	"id" 					SERIAL PRIMARY KEY,
 	"timestamp"				TIMESTAMP WITH TIME ZONE,
 	"itemId" 				BIGINT,
 	"topRatedListing" 		BOOLEAN,
 	"globalId"				TEXT,
 	"title"					TEXT,
+	"subtitle"				TEXT,
 	"country"				TEXT,
 	
 	"primaryCategory.categoryId"		INTEGER,
 	"primaryCategory.categoryName"		TEXT,
+	"secondaryCategory.categoryId"		TEXT,
+	"secondaryCategory.categoryName"	TEXT,
 	"pictureURLLarge"					TEXT,
 	"galleryURL"						TEXT,
 	
@@ -60,7 +74,7 @@ cur.execute('''
 	"listingInfo.buyItNowAvailable"		BOOLEAN,
 	"listingInfo.endTime"				TIMESTAMP WITH TIME ZONE
 )
-''')
+'''.format(tablename=tablename))
 
 # cur.execute("SELECT * FROM test;")
 # cur.fetchone()

@@ -4,14 +4,13 @@ from optparse import OptionParser
 import psycopg2
 from psycopg2.extensions import AsIs
 from collections import OrderedDict
+import datetime
 
-# The line below will add 
+pagesToQuery = int(input('Enter number of pages to query:'))
+entriesPerPage = int(input('Enter number of entries per page to query:'))
+pageStart = int(input('Enter page number to start at:'))
 sys.path.insert(0, '%s/../' % os.path.dirname(__file__))
 
-# for path in sys.path:
-#   print path
-
-# from common import dump # not sure why this module doesn't load 
 
 import ebaysdk
 from ebaysdk.finding import Connection as finding
@@ -35,114 +34,168 @@ def init_options():
     return opts, args
 
 
-def run(opts):
+def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
+    # --- set up query parameters 
+    # COULD NOT GET THIS TO HAVE ANY AFFECT 
+    # endTimeFrom = '2017-01-01'
+    # endTimeTo   = '2017-01-25'
+    # endTimeFrom = datetime.datetime.strptime(endTimeFrom, "%Y-%m-%d").isoformat() + '.000Z'
+    # endTimeTo   = datetime.datetime.strptime(endTimeTo, "%Y-%m-%d").isoformat() + '.000Z'
+    # print 'endTimeFrom:',endTimeFrom
+    # print 'endTimeTo:',endTimeTo
+
+
+    # ------ CONNECT TO POSTGRES DATABSE ----- #
+    dbname='ebay'
+    user='nathan'
+    host='localhost'
+    TABLE_NAME = 'completed_items'
+
+    try:
+        conn = psycopg2.connect("dbname={} user={} host={}".format(dbname, user, host))
+        print '\nConnected to {} with user:{} on host:{}\n'.format(dbname, user, host)
+    except:
+        print "ERROR: Unable to connect to the database." 
+        print "Check database connection settings and try again."
+        return False
+
+    cur = conn.cursor()
+
+    # ------------ QUERY EBAY ---------------- #
     try:
         api = finding(debug=opts.debug, appid=opts.appid,
                       config_file=opts.yaml, warnings=True)
 
-        api_request = {
-            'keywords': 'camera',
-            #'CategoryId' : '181194', # vintage electronic keyboards
-            'CategoryId'  :  '625', # digital cameras 
-            # https://developer.ebay.com/devzone/finding/CallRef/types/ItemFilterType.html
-            # https://developer.ebay.com/devzone/finding/CallRef/extra/fndCmpltdItms.Rqst.tmFltr.nm.html
-            'itemFilter': [
-                {'name': 'Condition', 'value': 'Used'},
-                {'name': 'LocatedIn', 'value': 'US'},
-                {'name': 'MinPrice',  'value': '10'},
-                {'name': 'ListingType', 'value':'Auction'},
-                # {'name': 'ListingType', 'value':'AuctionWithBIN'},
-                {'name': 'HideDuplicateItems', 'value':'true'},
-                {'name': 'SellerBusinessType', 'value' : 'Private'},
-                {'name': 'Currency', 'value':'USD'}
-            ],
-            # Use outputSelector to include more information in the response. 
-            'outputSelector': [
-              'PictureURLLarge',
-              'SellerInfo',
-              'StoreInfo',
-              'UnitPriceInfo'
-            ],
-            'paginationInput': {
-                'entriesPerPage': '1', # max = 100
-                'pageNumber': '1'    # execute the call with subsequent values for this field 
-            },
-            #'sortOrder': 'PricePlusShippingLowest',
-        }
+        for pageNum in range(pageStart, pageStart+pagesToQuery+1): 
 
-        response = api.execute('findCompletedItems', api_request)
+            api_request = {
+                'keywords': 'camera',
+                'CategoryId'  :  '31388', # 31388 : digital cameras 
+                # https://developer.ebay.com/devzone/finding/CallRef/types/ItemFilterType.html
+                # https://developer.ebay.com/devzone/finding/CallRef/extra/fndCmpltdItms.Rqst.tmFltr.nm.html
+                'itemFilter': [
+                    {'name': 'LocatedIn', 'value': 'US'},
+                    {'name': 'Currency', 'value':'USD'},
 
-        dic = response.dict()
+                    {'name': 'Condition', 'value': 'Used'},                    
+                    {'name': 'MinPrice',  'value': '750'},
+                    {'name': 'MaxPrice',  'value': '2000'},
 
-        # print 'size of dict is {}\n'.format(sys.getsizeof(dic)) # size of default dict + pictureURLLarge is 280 bytes 
+                    {'name': 'ListingType', 'value':'Auction'},
+                    # {'name': 'ListingType', 'value':'AuctionWithBIN'},
 
+                    {'name': 'HideDuplicateItems', 'value':'true'},
 
-        # ------ CONNECT TO POSTGRES DATABSE ----- #
-        dbname='test-db1'
-        user='nathan'
-        host='localhost'
-        TABLE_NAME = 'completed_items'
+                    # {'name': 'SellerBusinessType', 'value' : 'Private'},
+                    
+                    # {'name': 'endTimeFrom', 'value': endTimeFrom},
+                    # {'name': 'endTimeTo',   'value': endTimeTo}
+                ],
+                # Use outputSelector to include more information in the response. 
+                'outputSelector': [
+                  'PictureURLLarge',
+                  'SellerInfo',
+                  'UnitPriceInfo'
+                ],
+                'paginationInput': {
+                    'entriesPerPage': entriesPerPage, # max = 100
+                    'pageNumber': pageNum    # execute the call with subsequent values for this field 
+                },
+                # 'sortOrder': 'PricePlusShippingLowest',
+                'sortOrder' : 'EndTimeSoonest'
+            }
 
-        try:
-            conn = psycopg2.connect("dbname={} user={} host={}".format(dbname, user, host))
-            print '\nConnected to {} with user:{} on host:{}\n'.format(dbname, user, host)
-        except:
-            print "Unable to connect to the database"
+            response = api.execute('findCompletedItems', api_request)
 
-        cur = conn.cursor()
+            dic = response.dict()
 
+            # if failure, print detail s
+            if dic['ack'] != 'Success':
+                print 'ack: ',dic['Ack']
+                print 'error message: ',dic['errorMessage']
 
-        # ------ STORE EBAY DATA IN TABLE ------ #
-        ebay_data_dict = OrderedDict()
+            if pageNum == 1:
+                # print dic
+                totalPages = dic['paginationOutput']['totalPages']
+                totalEntries = dic['paginationOutput']['totalEntries']
+                # _count = dic['searchResult']['_count']
+                print 'Total Pages = {}'.format(totalPages)
+                print 'Total Entries = {}'.format(totalEntries)
 
-        timestamp = dic['timestamp'] # Example : '2017-03-25T01:58:10.520Z'
-        ebay_data_dict['timestamp'] = timestamp # grab timestamp 
+            # print '\nsize of dict is {}\n'.format(sys.getsizeof(dic)) 
 
-        for key1,val1 in dic['searchResult']['item'][0].iteritems():
-            if type(val1) is dict:
-                for key2,val2 in val1.iteritems():
-                    if type(val2) is dict:
-                        for key3,val3 in val2.iteritems():
-                            print '{}.{}.{} : {}'.format(key1,key2,key3,val3)
-                            key = '.'.join([key1,key2,key3])
-                            val = val3
-                            ebay_data_dict[key] = val
-                            # insert_sql(key, val3, cur)
+            # print 'length of returned dict:',len(dic['searchResult']['item'])
+
+            # ------ STORE EBAY DATA IN DICTIONARY ------ #
+            ebay_data_dict = OrderedDict()
+
+            timestamp = dic['timestamp'] # Example : '2017-03-25T01:58:10.520Z'
+            ebay_data_dict['timestamp'] = timestamp 
+
+            for entryNum in range(len(dic['searchResult']['item'])):
+                for key1,val1 in dic['searchResult']['item'][entryNum].iteritems():
+                    if type(val1) is dict:
+                        for key2,val2 in val1.iteritems():
+                            if type(val2) is dict:
+                                for key3,val3 in val2.iteritems():
+                                    # print '{}.{}.{} : {}'.format(key1,key2,key3,val3)
+                                    key = '.'.join([key1,key2,key3])
+                                    val = val3
+                                    ebay_data_dict[key] = val
+                            else:
+                                # print '{}.{} : {}'.format(key1,key2,val2)
+                                key = '.'.join([key1,key2])
+                                val = val2
+                                ebay_data_dict[key] = val
                     else:
-                        print '{}.{} : {}'.format(key1,key2,val2)
-                        key = '.'.join([key1,key2])
-                        val = val2
+                        # print '{} : {}\n'.format(key1, val1)
+                        key = key1
+                        val = val1
                         ebay_data_dict[key] = val
-                        # insert_sql(key,val2)
-            else:
-                print '{} : {}\n'.format(key1, val1)
-                key = key1
-                val = val1
-                ebay_data_dict[key] = val
-                # insert_sql(key,val2)
 
-        # remove entries we don't need
-        bad_keys = ["sellingStatus.convertedCurrentPrice.value", \
-        "sellingStatus.convertedCurrentPrice._currencyId",  \
-        "sellingStatus.currentPrice._currencyId", \
-        "shippingInfo.shippingServiceCost._currencyId", \
-        "storeInfo.storeURL", \
-        "storeInfo.storeName"]
-        for key in bad_keys:
-            ebay_data_dict.pop(key)
+                # remove entries we don't need
+                bad_keys = [ \
+                "searchResult.item.attribute", \
+                "searchResult.item.attribute.value",\
+                "searchResult.item.attribute.name", \
+                "searchResult.item.discountPriceInfo.originalRetailPrice_currencyId", \
+                "searchResult.item._distance"
+                "searchResult.item.galleryInfoContainer.galleryURL._gallerySize",\
+                "searchResult.item.listingInfo.convertedBuyItNowPrice._currencyId", \
+                "sellingStatus.convertedCurrentPrice.value", \
+                "sellingStatus.convertedCurrentPrice._currencyId",  \
+                "sellingStatus.currentPrice._currencyId", \
+                "shippingInfo.shippingServiceCost._currencyId", \
+                "galleryPlusPictureURL", \
+                "storeInfo.storeURL", \
+                "storeInfo.storeName", \
+                "productId._type",\
+                "productId.value", 
+                "charityId",\
+                ]
+                for key in bad_keys:
+                    if key in ebay_data_dict.keys():
+                        ebay_data_dict.pop(key)
+
+
+                # ------ ENTER EBAY DATA INTO TABLE ----- #
+                currentEntryNum = entryNum + pageNum * entriesPerPage
+                totalEntriesNum = dic['paginationOutput']['totalEntries']
+                # print 'sesarchResult._count:{}'.format(dic['searchResult']['_count'])
+                print "inserting item #{} out of {} into table {} in database {}".format(currentEntryNum,totalEntriesNum, TABLE_NAME, dbname)
+                keys = ['"{}"'.format(key) for key in ebay_data_dict.keys()]
+                values = ebay_data_dict.values()
+
+                insert_statement = 'INSERT INTO {} (%s) values %s'.format(TABLE_NAME)
+
+                query = cur.mogrify(insert_statement, (AsIs(','.join(keys)), tuple(values)))
+                
+                cur.execute(query)
+                conn.commit()
+
 
         # ------ CLOSE CONNECTION TO DATABSE ----- #
-        keys = ['"{}"'.format(key) for key in ebay_data_dict.keys()]
-        values = ebay_data_dict.values()
-
-        insert_statement = 'INSERT INTO {} (%s) values %s'.format(TABLE_NAME)
-
-        query = cur.mogrify(insert_statement, (AsIs(','.join(keys)), tuple(values)))
-        
-        cur.execute(query)
-
-        conn.commit()
         cur.close()
         conn.close()
 
@@ -152,17 +205,12 @@ def run(opts):
         print(e.response.dict())
 
 
-def insert_sql(key,val, cursor):
-    SQL = '''
-    INSERT INTO %s (code, title, did, date_prod, kind)
-    VALUES ('T_601', 'Yojimbo', 106, '1961-06-16', 'Drama');
-    '''
-    cur.execute()
-    conn.commit()
-
+#-------------------------------#
+#------------ MAIN -------------#
+#-------------------------------#
 
 if __name__ == "__main__":
     # print 'connecting to database...'
 	print("Finding samples for SDK version %s" % ebaysdk.get_version())
 	(opts, args) = init_options()
-	run(opts)
+	run(opts, pagesToQuery=pagesToQuery, entriesPerPage=entriesPerPage, pageStart=pageStart)
