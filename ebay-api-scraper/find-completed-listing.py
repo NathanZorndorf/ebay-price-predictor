@@ -5,10 +5,12 @@ import psycopg2
 from psycopg2.extensions import AsIs
 from collections import OrderedDict
 import datetime
+import pprint 
 
 pagesToQuery = int(input('Enter number of pages to query:'))
 entriesPerPage = int(input('Enter number of entries per page to query:'))
 pageStart = int(input('Enter page number to start at:'))
+
 sys.path.insert(0, '%s/../' % os.path.dirname(__file__))
 
 
@@ -20,17 +22,12 @@ def init_options():
     usage = "usage: %prog [options]"
     parser = OptionParser(usage=usage)
 
-    parser.add_option("-d", "--debug",
-                      action="store_true", dest="debug", default=False,
-                      help="Enabled debugging [default: %default]")
-    parser.add_option("-y", "--yaml",
-                      dest="yaml", default='ebay.yaml',
-                      help="Specifies the name of the YAML defaults file. [default: %default]")
-    parser.add_option("-a", "--appid",
-                      dest="appid", default=None,
-                      help="Specifies the eBay application id to use.")
+    parser.add_option("-d", "--debug",action="store_true", dest="debug", default=False,help="Enabled debugging [default: %default]")
+    parser.add_option("-y", "--yaml",dest="yaml", default='./ebay.yaml',help="Specifies the name of the YAML defaults file. [default: %default]")
+    parser.add_option("-a", "--appid",dest="appid", default=None,help="Specifies the eBay application id to use.")
 
     (opts, args) = parser.parse_args()
+
     return opts, args
 
 
@@ -57,15 +54,13 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
         print '\nConnected to {} with user:{} on host:{}\n'.format(dbname, user, host)
     except:
         print "ERROR: Unable to connect to the database." 
-        print "Check database connection settings and try again."
-        return False
+        sys.exit("Check database connection settings and try again.")
 
     cur = conn.cursor()
 
     # ------------ QUERY EBAY ---------------- #
     try:
-        api = finding(debug=opts.debug, appid=opts.appid,
-                      config_file=opts.yaml, warnings=True)
+        api = finding(debug=opts.debug, appid=opts.appid,config_file=opts.yaml, warnings=True)
 
         for pageNum in range(pageStart, pageStart+pagesToQuery+1): 
 
@@ -79,8 +74,8 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                     {'name': 'Currency', 'value':'USD'},
 
                     {'name': 'Condition', 'value': 'Used'},                    
-                    {'name': 'MinPrice',  'value': '750'},
-                    {'name': 'MaxPrice',  'value': '2000'},
+                    {'name': 'MinPrice',  'value': '245'},
+                    {'name': 'MaxPrice',  'value': '319'},
 
                     {'name': 'ListingType', 'value':'Auction'},
                     # {'name': 'ListingType', 'value':'AuctionWithBIN'},
@@ -123,9 +118,9 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 print 'Total Pages = {}'.format(totalPages)
                 print 'Total Entries = {}'.format(totalEntries)
 
-            # print '\nsize of dict is {}\n'.format(sys.getsizeof(dic)) 
 
-            # print 'length of returned dict:',len(dic['searchResult']['item'])
+            # print "dic['searchResult']['item'][0]:{}".format(dic['searchResult']['item'][0])
+            # pprint.pprint(dic['searchResult']['item'][0])
 
             # ------ STORE EBAY DATA IN DICTIONARY ------ #
             ebay_data_dict = OrderedDict()
@@ -177,7 +172,6 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 for key in bad_keys:
                     if key in ebay_data_dict.keys():
                         ebay_data_dict.pop(key)
-
 
                 # ------ ENTER EBAY DATA INTO TABLE ----- #
                 currentEntryNum = entryNum + pageNum * entriesPerPage

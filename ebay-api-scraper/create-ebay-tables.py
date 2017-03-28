@@ -65,6 +65,7 @@ cur.execute('''
 	
 	"isMultiVariationListing"	BOOLEAN,
 	
+	"condition"							TEXT,
 	"condition.conditionId"				INTEGER,
 	"condition.conditionDisplayName"	TEXT,
 	"listingInfo.listingType"			TEXT,
