@@ -74,8 +74,8 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                     {'name': 'Currency', 'value':'USD'},
 
                     {'name': 'Condition', 'value': 'Used'},                    
-                    {'name': 'MinPrice',  'value': '245'},
-                    {'name': 'MaxPrice',  'value': '319'},
+                    {'name': 'MinPrice',  'value': '120'},
+                    {'name': 'MaxPrice',  'value': '150'},
 
                     {'name': 'ListingType', 'value':'Auction'},
                     # {'name': 'ListingType', 'value':'AuctionWithBIN'},
