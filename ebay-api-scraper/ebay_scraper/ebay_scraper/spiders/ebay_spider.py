@@ -1,5 +1,11 @@
 import scrapy
 import psycopg2
+import logging
+
+# By default, Scrapy sets and configures a handler for the root logger
+# logging.basicConfig(filename='ebay_spider_log.log', level=logging.ERROR)
+# logger = logging.getLogger('mycustomlogger')
+# logger = logging.getLogger('ebaylogger')
 
 class EbaySpider(scrapy.Spider):
     name = "ebay"

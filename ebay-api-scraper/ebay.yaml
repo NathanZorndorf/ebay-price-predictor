@@ -27,9 +27,9 @@ svcs.ebay.com:
 
 # Shopping API - https://www.x.com/developers/ebay/products/shopping-api
 open.api.ebay.com:
-  # appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+  appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
   # appid: YunusGen-HelpforN-PRD-b08f655c9-9bfb3bd0
-  appid: TaylorKi-taylorsh-PRD-f0902ebf9-31c2395b
+  # appid: TaylorKi-taylorsh-PRD-f0902ebf9-31c2395b
     version: 671
 
     # Optional affiliate tracking

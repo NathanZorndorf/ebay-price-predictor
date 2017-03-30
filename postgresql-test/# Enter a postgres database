@@ -53,7 +53,7 @@ CREATE USER nathan CREATEDB
 CREATE TABLE tablename 
 
 #--- Drop a table
-DROP TABLE tablename
+DROP TABLE tablename;
 
 #--- delete all rows in a table
 TRUNCATE tablename;
@@ -66,6 +66,16 @@ ALTER TABLE tablename DROP COLUMN colname;
 
 #--- Insert data into a table 
 INSERT INTO tablename (col1, col2) VALUES (val1, val2);
+
+#--- Delete rows with duplicate values in certain columns
+# A frequent question in IRC is how to delete rows that are duplicates over a set of columns, keeping only the one with the lowest ID.
+# This query does that for all rows of tablename having the same column1, column2, and column3.
+DELETE FROM tablename
+WHERE id IN (SELECT id
+              FROM (SELECT id,
+                             ROW_NUMBER() OVER (partition BY column1, column2, column3 ORDER BY id) AS rnum
+                     FROM tablename) t
+              WHERE t.rnum > 1);
 
 #------- SELECTION ------#
 #--- Get the hour from a table 

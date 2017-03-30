@@ -66,16 +66,14 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
             api_request = {
                 'keywords': 'camera',
-                'CategoryId'  :  '31388', # 31388 : digital cameras 
-                # https://developer.ebay.com/devzone/finding/CallRef/types/ItemFilterType.html
-                # https://developer.ebay.com/devzone/finding/CallRef/extra/fndCmpltdItms.Rqst.tmFltr.nm.html
+                # 'categoryId'  :  '31388', # 31388 : digital cameras                 
                 'itemFilter': [
                     {'name': 'LocatedIn', 'value': 'US'},
                     {'name': 'Currency', 'value':'USD'},
 
                     {'name': 'Condition', 'value': 'Used'},                    
-                    {'name': 'MinPrice',  'value': '120'},
-                    {'name': 'MaxPrice',  'value': '150'},
+                    {'name': 'MinPrice',  'value': '71'},
+                    {'name': 'MaxPrice',  'value': '85'},
 
                     {'name': 'ListingType', 'value':'Auction'},
                     # {'name': 'ListingType', 'value':'AuctionWithBIN'},
@@ -86,8 +84,7 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                     
                     # {'name': 'endTimeFrom', 'value': endTimeFrom},
                     # {'name': 'endTimeTo',   'value': endTimeTo}
-                ],
-                # Use outputSelector to include more information in the response. 
+                ],                
                 'outputSelector': [
                   'PictureURLLarge',
                   'SellerInfo',
@@ -96,8 +93,7 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 'paginationInput': {
                     'entriesPerPage': entriesPerPage, # max = 100
                     'pageNumber': pageNum    # execute the call with subsequent values for this field 
-                },
-                # 'sortOrder': 'PricePlusShippingLowest',
+                },                
                 'sortOrder' : 'EndTimeSoonest'
             }
 
@@ -178,13 +174,12 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 totalEntriesNum = dic['paginationOutput']['totalEntries']
                 # print 'sesarchResult._count:{}'.format(dic['searchResult']['_count'])
                 print "inserting item #{} out of {} into table {} in database {}".format(currentEntryNum,totalEntriesNum, TABLE_NAME, dbname)
-                keys = ['"{}"'.format(key) for key in ebay_data_dict.keys()]
-                values = ebay_data_dict.values()
+                keys = ['"{}"'.format(key) for key in ebay_data_dict.keys()] # surround key with quotes
+                values = ebay_data_dict.values() # extract values 
+
 
                 insert_statement = 'INSERT INTO {} (%s) values %s'.format(TABLE_NAME)
-
                 query = cur.mogrify(insert_statement, (AsIs(','.join(keys)), tuple(values)))
-                
                 cur.execute(query)
                 conn.commit()
 

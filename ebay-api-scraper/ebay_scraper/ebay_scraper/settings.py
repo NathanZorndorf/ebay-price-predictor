@@ -22,7 +22,7 @@ NEWSPIDER_MODULE = 'ebay_scraper.spiders'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 60
+CONCURRENT_REQUESTS = 80
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -83,7 +83,7 @@ AUTOTHROTTLE_START_DELAY = 0.1
 AUTOTHROTTLE_MAX_DELAY = 10
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server. High value -> High speed
-AUTOTHROTTLE_TARGET_CONCURRENCY = 32
+AUTOTHROTTLE_TARGET_CONCURRENCY = 64
 # Enable showing throttling stats for every response received:
 #AUTOTHROTTLE_DEBUG = False
 
@@ -94,3 +94,11 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 32
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# LOGGING
+# LOG_FILE = '/Users/Naekid/Desktop/capstone-DSI-5/ebay-price-predictor/ebay-api-scraper/ebay_scraper/ebay_spider_log.log'
+# LOG_FILE = 'ebay_spider_log.log'
+# LOG_ENABLED = True
+# LOG_LEVEL = logging.ERROR
+
+
