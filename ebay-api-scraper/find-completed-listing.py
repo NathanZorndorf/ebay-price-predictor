@@ -7,6 +7,13 @@ from collections import OrderedDict
 import datetime
 import pprint 
 
+numArgs = len(sys.argv)
+if numArgs < 1 or numArgs > 7:
+    print 'ERROR: Not enough arguments. Please input "host",user",dbname","tablename",minPrice,maxPrice as arguments.'
+    sys.exit()
+
+(host, user, dbname, TABLE_NAME,minPrice,maxPrice) = tuple(sys.argv[1:])
+
 pagesToQuery = int(input('Enter number of pages to query:'))
 entriesPerPage = int(input('Enter number of entries per page to query:'))
 pageStart = int(input('Enter page number to start at:'))
@@ -44,10 +51,10 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
 
     # ------ CONNECT TO POSTGRES DATABSE ----- #
-    dbname='ebay'
-    user='nathan'
-    host='localhost'
-    TABLE_NAME = 'completed_items'
+    # dbname='ebay'
+    # user='nathan'
+    # host='localhost'
+    # TABLE_NAME = 'completed_items_15230_31388'
 
     try:
         conn = psycopg2.connect("dbname={} user={} host={}".format(dbname, user, host))
@@ -65,15 +72,16 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
         for pageNum in range(pageStart, pageStart+pagesToQuery+1): 
 
             api_request = {
-                'keywords': 'camera',
-                # 'categoryId'  :  '31388', # 31388 : digital cameras                 
+                # 'keywords': 'camera',
+                'categoryId'  :  '15230', # 15230 : Film cameras     
+                'categoryId'  :  '31388', # 31388 : Digital cameras     
                 'itemFilter': [
                     {'name': 'LocatedIn', 'value': 'US'},
                     {'name': 'Currency', 'value':'USD'},
 
-                    {'name': 'Condition', 'value': 'Used'},                    
-                    {'name': 'MinPrice',  'value': '71'},
-                    {'name': 'MaxPrice',  'value': '85'},
+                    {'name': 'Condition', 'value': 'Used'},
+                    {'name': 'MinPrice',  'value': minPrice},
+                    {'name': 'MaxPrice',  'value': maxPrice},
 
                     {'name': 'ListingType', 'value':'Auction'},
                     # {'name': 'ListingType', 'value':'AuctionWithBIN'},
@@ -174,6 +182,8 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 totalEntriesNum = dic['paginationOutput']['totalEntries']
                 # print 'sesarchResult._count:{}'.format(dic['searchResult']['_count'])
                 print "inserting item #{} out of {} into table {} in database {}".format(currentEntryNum,totalEntriesNum, TABLE_NAME, dbname)
+                # print 'categoryId:'.format(ebay_data_dict['primaryCategory.categoryId'])
+                # pprint.pprint(ebay_data_dict)
                 keys = ['"{}"'.format(key) for key in ebay_data_dict.keys()] # surround key with quotes
                 values = ebay_data_dict.values() # extract values 
 
