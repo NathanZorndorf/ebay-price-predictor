@@ -11,4 +11,7 @@ import scrapy
 class EbayScraperItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+
+    itemId = scrapy.Field(default='NULL')
+    conditionDescription = scrapy.Field(default='NULL')
+    startPrice = scrapy.Field(default='NULL')

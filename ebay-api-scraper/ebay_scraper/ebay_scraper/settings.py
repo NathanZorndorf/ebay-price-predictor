@@ -71,7 +71,9 @@ ITEM_PIPELINES = {
 POSTGRES_HOST = "localhost"
 POSTGRES_USER = "nathan"
 POSTGRES_DB = "ebay"
-POSTGRES_TABLE = "completed_items"
+POSTGRES_TABLE = "completed_items_15230_31388"
+# POSTGRES_TABLE = "completed_items"
+# POSTGRES_TABLE = "scrapy_test"
 
 
 # Enable and configure the AutoThrottle extension (disabled by default)

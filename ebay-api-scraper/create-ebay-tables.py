@@ -58,7 +58,7 @@ cur.execute('''
 	"returnsAccepted"		BOOLEAN,
 	"viewItemURL"			TEXT,
 	
-	"sellingStatus.currentPrice.value"			DECIMAL,
+	"sellingStatus.currentPrice.value"			DECIMAL,	
 	"sellingStatus.bidCount" 					SMALLINT,
 	"sellingStatus.sellingState"				TEXT,
 	"paymentMethod"								TEXT,
@@ -74,7 +74,8 @@ cur.execute('''
 	"listingInfo.startTime"				TIMESTAMP WITH TIME ZONE,
 	"listingInfo.buyItNowAvailable"		BOOLEAN,
 	"listingInfo.endTime"				TIMESTAMP WITH TIME ZONE,
-	"conditiondescription"				TEXT
+	"conditiondescription"				TEXT,
+	"startprice"						DECIMAL
 )
 '''.format(tablename=tablename))
 

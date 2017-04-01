@@ -46,12 +46,14 @@ class EbayPostgresPipeline(object):
 
 		SQL = '''
 		UPDATE ONLY {table_name} as ci
-		SET conditiondescription = '{condition}'
+		SET conditiondescription = '{condition}',
+			startprice = {start_price}
 		WHERE ci."itemId" = {itemId};
 		'''.format( table_name=self.postgres_table, 
-		condition=item['condition'], 
-		itemId = item['itemId'] 
-		) 
+					start_price=item['startPrice'],
+					condition=item['conditionDescription'], 
+					itemId = item['itemId'] 
+			) 
 
 		self.cur.execute(SQL) # execute SQL, and commit changes 
 		self.conn.commit()
