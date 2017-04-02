@@ -73,6 +73,7 @@ cur.execute('''
 	"listingInfo.bestOfferEnabled"		BOOLEAN,
 	"listingInfo.startTime"				TIMESTAMP WITH TIME ZONE,
 	"listingInfo.buyItNowAvailable"		BOOLEAN,
+	"listingInfo.buyItNowPrice"			DECIMAL,
 	"listingInfo.endTime"				TIMESTAMP WITH TIME ZONE,
 	"conditiondescription"				TEXT,
 	"startprice"						DECIMAL

@@ -15,3 +15,4 @@ class EbayScraperItem(scrapy.Item):
     itemId = scrapy.Field(default='NULL')
     conditionDescription = scrapy.Field(default='NULL')
     startPrice = scrapy.Field(default='NULL')
+    duration = scrapy.Field(default='NULL')

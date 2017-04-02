@@ -40,14 +40,13 @@ def init_options():
 
 def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
-    # --- set up query parameters 
-    # COULD NOT GET THIS TO HAVE ANY AFFECT 
-    # endTimeFrom = '2017-01-01'
-    # endTimeTo   = '2017-01-25'
-    # endTimeFrom = datetime.datetime.strptime(endTimeFrom, "%Y-%m-%d").isoformat() + '.000Z'
-    # endTimeTo   = datetime.datetime.strptime(endTimeTo, "%Y-%m-%d").isoformat() + '.000Z'
-    # print 'endTimeFrom:',endTimeFrom
-    # print 'endTimeTo:',endTimeTo
+    # --- set up query parameters ; COULD NOT GET THIS TO HAVE ANY AFFECT
+    endTimeFrom = '2017-03-30 11:10:00'
+    endTimeTo   = '2017-04-02 12:00:00'
+    endTimeFrom = datetime.datetime.strptime(endTimeFrom, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
+    endTimeTo   = datetime.datetime.strptime(endTimeTo, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
+    print 'endTimeFrom:',endTimeFrom
+    print 'endTimeTo:',endTimeTo
 
 
     # ------ CONNECT TO POSTGRES DATABSE ----- #
@@ -83,15 +82,16 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                     {'name': 'MinPrice',  'value': minPrice},
                     {'name': 'MaxPrice',  'value': maxPrice},
 
-                    {'name': 'ListingType', 'value':'Auction'},
+                    # {'name': 'ListingType', 'value':'Auction'},
                     # {'name': 'ListingType', 'value':'AuctionWithBIN'},
+                    {'name': 'ListingType', 'value':'FixedPrice'},
 
                     {'name': 'HideDuplicateItems', 'value':'true'},
 
                     # {'name': 'SellerBusinessType', 'value' : 'Private'},
                     
-                    # {'name': 'endTimeFrom', 'value': endTimeFrom},
-                    # {'name': 'endTimeTo',   'value': endTimeTo}
+                    # {'name': 'EndTimeFrom', 'value': endTimeFrom},
+                    # {'name': 'EndTimeTo',   'value': endTimeTo}
                 ],                
                 'outputSelector': [
                   'PictureURLLarge',
@@ -165,13 +165,21 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 "sellingStatus.convertedCurrentPrice.value", \
                 "sellingStatus.convertedCurrentPrice._currencyId",  \
                 "sellingStatus.currentPrice._currencyId", \
+                "listingInfo.buyItNowPrice._currencyId", \
+                "listingInfo.convertedBuyItNowPrice._currencyId", \
                 "shippingInfo.shippingServiceCost._currencyId", \
+                "listingInfo.convertedBuyItNowPrice.value", \
                 "galleryPlusPictureURL", \
                 "storeInfo.storeURL", \
                 "storeInfo.storeName", \
                 "productId._type",\
                 "productId.value", 
                 "charityId",\
+                "discountPriceInfo.soldOnEbay", \
+                "discountPriceInfo.pricingTreatment", \
+                "discountPriceInfo.originalRetailPrice._currencyId", \
+                "discountPriceInfo.originalRetailPrice.value", \
+                "discountPriceInfo.soldOffEbay", \
                 ]
                 for key in bad_keys:
                     if key in ebay_data_dict.keys():

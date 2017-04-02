@@ -47,11 +47,13 @@ class EbayPostgresPipeline(object):
 		SQL = '''
 		UPDATE ONLY {table_name} as ci
 		SET conditiondescription = '{condition}',
-			startprice = {start_price}
+			startprice = {start_price},
+			duration = '{duration}'
 		WHERE ci."itemId" = {itemId};
 		'''.format( table_name=self.postgres_table, 
 					start_price=item['startPrice'],
 					condition=item['conditionDescription'], 
+					duration=item['duration'],
 					itemId = item['itemId'] 
 			) 
 
