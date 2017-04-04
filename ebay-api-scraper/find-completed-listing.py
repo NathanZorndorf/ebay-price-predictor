@@ -41,12 +41,12 @@ def init_options():
 def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
     # --- set up query parameters ; COULD NOT GET THIS TO HAVE ANY AFFECT
-    endTimeFrom = '2017-03-30 11:10:00'
-    endTimeTo   = '2017-04-02 12:00:00'
-    endTimeFrom = datetime.datetime.strptime(endTimeFrom, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
-    endTimeTo   = datetime.datetime.strptime(endTimeTo, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
-    print 'endTimeFrom:',endTimeFrom
-    print 'endTimeTo:',endTimeTo
+    # endTimeFrom = '2017-03-30 11:10:00'
+    # endTimeTo   = '2017-04-02 12:00:00'
+    # endTimeFrom = datetime.datetime.strptime(endTimeFrom, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
+    # endTimeTo   = datetime.datetime.strptime(endTimeTo, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
+    # print 'endTimeFrom:',endTimeFrom
+    # print 'endTimeTo:',endTimeTo
 
 
     # ------ CONNECT TO POSTGRES DATABSE ----- #
@@ -85,6 +85,7 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                     # {'name': 'ListingType', 'value':'Auction'},
                     # {'name': 'ListingType', 'value':'AuctionWithBIN'},
                     {'name': 'ListingType', 'value':'FixedPrice'},
+                    # {'name': 'SoldItemsOnly', 'value':'true'},
 
                     {'name': 'HideDuplicateItems', 'value':'true'},
 

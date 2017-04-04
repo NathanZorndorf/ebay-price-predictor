@@ -13,7 +13,7 @@ if numArgs < 1 or numArgs > 5:
 # user='nathan'
 # host='localhost'
 
-print (host, dbname, tablename,user)
+print (host, user, dbname, tablename)
 
 try:
     conn = psycopg2.connect("dbname={} user={} host={}".format(dbname, user, host))
@@ -73,10 +73,11 @@ cur.execute('''
 	"listingInfo.bestOfferEnabled"		BOOLEAN,
 	"listingInfo.startTime"				TIMESTAMP WITH TIME ZONE,
 	"listingInfo.buyItNowAvailable"		BOOLEAN,
-	"listingInfo.buyItNowPrice"			DECIMAL,
 	"listingInfo.endTime"				TIMESTAMP WITH TIME ZONE,
 	"conditiondescription"				TEXT,
-	"startprice"						DECIMAL
+	"startprice"						DECIMAL,
+	"listingInfo.buyItNowPrice.value"	DECIMAL,
+	"endprice"							DECIMAL
 )
 '''.format(tablename=tablename))
 

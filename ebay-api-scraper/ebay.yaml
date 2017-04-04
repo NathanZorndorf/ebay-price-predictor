@@ -23,7 +23,7 @@ api.ebay.com:
 # Finding API - https://www.x.com/developers/ebay/products/finding-api
 svcs.ebay.com:
     appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
-    version: 1.0.0
+    version: 1.13.0
 
 # Shopping API - https://www.x.com/developers/ebay/products/shopping-api
 open.api.ebay.com:

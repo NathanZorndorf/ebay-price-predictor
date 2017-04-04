@@ -4,6 +4,7 @@ import items
 import psycopg2
 import logging
 from scrapy.utils.log import configure_logging
+from pprint import pprint 
 
 class EbaySpider(scrapy.Spider):
     name = "ebay"
@@ -35,7 +36,7 @@ class EbaySpider(scrapy.Spider):
         ORDER BY ci."timestamp" ASC; 
         '''.format(tablename=postgres_table)
         cur.execute(SQL)
-        urls = [str(url) for itemId,url,listingType in cur.fetchall()]
+        urls = [(str(url), listingType) for itemId,url,listingType in cur.fetchall()]
         num_urls_total = len(urls)
         urls = urls[self.url_start_index:]         # limit scraping to only the indeces we care about. we could do this in SQL, and we should make that change later
 
@@ -55,9 +56,11 @@ class EbaySpider(scrapy.Spider):
 
         # THIS CAN RETURN A GENERATOR or "LIST OF REQUESTS"
         # https://doc.scrapy.org/en/latest/topics/spiders.html#scrapy.spiders.Spider.start_requests
-        for i,url in enumerate(urls):
+        for i,tup in enumerate(urls):
             logging.debug("scraping #{} out of {} urls.".format(i+self.url_start_index, num_urls_total))
-            yield scrapy.Request(url=url, callback=self.parse) # after yielding the request, scrapy will go and download the url, and then call the callback function
+            url = tup[0]
+            listingType = tup[1]
+            yield scrapy.Request(url=url, callback=self.parse, meta={'listingType':listingType}) # after yielding the request, scrapy will go and download the url, and then call the callback function
 
 
 
@@ -65,6 +68,7 @@ class EbaySpider(scrapy.Spider):
 
         item = items.EbayScraperItem()
 
+        listingType = response.meta['listingType']
 
         # Item condition
         item_condition_xpath = "//td[@class='sellerNotesContent']/span[@class='viSNotesCnt']/text()"        
@@ -77,37 +81,85 @@ class EbaySpider(scrapy.Spider):
         # Item ID
         item_id_xpath = "//div[@id='descItemNumber']/text()"
         item['itemId'] = int(response.xpath(item_id_xpath).extract_first())
+        
 
-        # Item duration
-        duration_xpath = "//span[@class='titleValueFont'][4]/text()"
-        item['duration'] = str(response.xpath(duration_xpath).extract_first())
+        if listingType == 'Auction' or listingType == 'AuctionWithBIN':
+            bid_count = response.xpath("//a[@id='vi-VR-bid-lnk']/span[1]/text()").extract_first()
+            bid_history_url = response.xpath("//a[@id='vi-VR-bid-lnk']/@href").extract_first()
 
-        # Start price 
-        bid_count = response.xpath("//a[@id='vi-VR-bid-lnk']/span[1]/text()").extract_first()
-        bid_history_url = response.xpath("//a[@id='vi-VR-bid-lnk']/@href").extract_first()
-        if bid_history_url != None and bid_count != 0: # this prevents us from making an unecessary requests if there is no startPrice (because no bids)
-            request = scrapy.Request(bid_history_url, callback=self.parse_start_price)
-            request.meta['item'] = item # save item to meta attribute of request 
-            return request # download response from request, then enter callback function self.parse_start_price with response 
-        else: # if the item had 0 bids             
-            startPrice = response.xpath("//span[@id='prcIsum']/text()").extract_first()
-            startPrice = float(startPrice.split('$')[1].replace(',',''))
-            item['startPrice'] = startPrice
-            return item # don't request a new url, just send item to pipeline.py
+            if bid_history_url != None:
 
+                if bid_count > 0: # this prevents us from making an unecessary requests if there is no startPrice (because no bids)                
+                    return scrapy.Request(url=bid_history_url, callback=self.parse_start_price, meta={'item':item})
+
+                else: # if the item had 0 bids             
+                    item['startPrice'] = float(str(response.xpath("//span[@class='notranslate vi-VR-cvipPrice']/text()").extract_first()).split('$')[1].replace(',',''))
+                    item['duration'] = 'NULL'
+                    item['endPrice'] = 'NULL'
+                    return item # don't request a new url, just send item to pipeline.py
+
+        else: # 'FixedPrice' or 'StoreInventory'
+            item['endPrice'] = float(str(response.xpath("//span[@id='prcIsum']/text()").extract_first()).split('$')[1].replace(',',''))
+            item['startPrice'] = 'NULL'
+            item['duration'] = 'NULL'
+            return item
 
 
 
     def parse_start_price(self, response):
+        
         item = response.meta['item'] # grab item attribute from response 
+
+
+        # item end price - I don't think we need this, because the endPrice is given in findCOmpletedItems
+
+        # end_price_xpath = "//div[2]/table/tbody/tr[2]/td/table/tbody/tr[2]/td/table/tbody/tr/td[@class='BHctBidVal']/text()"
+        # item['endPrice'] = float(str(response.xpath(end_price_xpath).extract_first()).split('$')[1].replace(',',''))
+        item['endPrice'] = 'NULL'
+
+        # Item duration
+        duration_xpath = "//span[@class='titleValueFont'][4]/text()"
+        item['duration'] = str(response.xpath(duration_xpath).extract_first()) \
+                            .decode('unicode_escape') \
+                            .encode('ascii','ignore') \
+                            .split('\r')[0]
+
+
+        # Item start price - ebay has (at least) 2 different types of HTML pages for the startPrice info
+        # try grabbing first xpath 
         start_price_xpath = "//tr[@id='viznobrd']/td[@class='contentValueFont'][1]/text()"        
-        startPrice = response.xpath(start_price_xpath).extract_first(default='NULL')
-        if startPrice != 'NULL':
+        for item in response.xpath(start_price_xpath).extract():
+            logging.debug('item in FIRST XPATH = '.format(item))
+        startPrice = response.xpath(start_price_xpath).extract_first(default='NULL') 
+        if startPrice != 'NULL': # the first x path worked 
             startPrice = float(startPrice.split('$')[1].replace(',',''))
+            item['startPrice'] = startPrice
+            return item
 
-        item['startPrice'] = startPrice
+        # Try grabbing the second xpath if the first xpath didn't work
+        start_price_xpath = "//table[@id='w2-w3-w0-w0']"
 
-        return item # Return item because all information has been gathered into item as this point 
+        for item in response.xpath(start_price_xpath).extract():
+            logging.debug('item in response.xpath() SECOND PATH = {}'.format(item))
+
+        startPrice = response.xpath(start_price_xpath).extract_first(default='NULL') 
+        if startPrice != 'NULL': # if the 2nd xpath worked...
+            logging.debug('url = {}'.format(response.url))
+            logging.debug('SECOND XPATH => startPrice = {}'.format(startPrice))
+            startPrice = startPrice.split('$')[-1] # take the last entry in the table, which is something like: 80.0023 Mar 2017 at 1:23:58PM PDT            
+            startPrice = '.'.join([startPrice.split('.')[0], startPrice.split('.')[1][:2]]) # take numbers before decimal and concatenate with 2 digits after decimal
+            startPrice = startPrice.replace(',','')
+            item['startPrice'] = float(startPrice)
+            return item
+
+
+        logging.debug('response.url = {}'.format(response.url))
+        logging.debug('startPrice = {}'.format(startPrice))
+        logging.debug('itemId = {}'.format(item['itemId']))
+
+        # if the first 2 xpaths didn't work... DEBUG
+        item['startPrice'] = 'NULL'            
+        return item 
 
 
         
