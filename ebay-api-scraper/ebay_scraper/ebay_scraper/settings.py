@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 # Scrapy settings for ebay_scraper project
@@ -29,7 +30,7 @@ CONCURRENT_REQUESTS = 2
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0.7 # default = 0
+DOWNLOAD_DELAY = 1 # default = 0
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -73,7 +74,7 @@ ITEM_PIPELINES = {
 POSTGRES_HOST = "localhost"
 POSTGRES_USER = "nathan"
 POSTGRES_DB = "ebay"
-POSTGRES_TABLE = "completed_items_15230_31388"
+POSTGRES_TABLE = "completed_items_v2"
 # POSTGRES_TABLE = "completed_items"
 # POSTGRES_TABLE = "scrapy_test"
 
@@ -100,8 +101,8 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 2
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # LOGGING
-LOG_FILE = '/Users/Naekid/Desktop/capstone-DSI-5/ebay-price-predictor/ebay-api-scraper/ebay_scraper/ebay_spider_log.log'
-LOG_ENABLED = True
+# LOG_FILE = '/Users/Naekid/Desktop/capstone-DSI-5/ebay-price-predictor/ebay-api-scraper/ebay_scraper/ebay_spider_log.log'
+# LOG_ENABLED = True
 # LOG_LEVEL = logging.ERROR
 
 

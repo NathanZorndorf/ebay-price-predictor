@@ -23,8 +23,8 @@ except:
 
 cur = conn.cursor()
 
-cur.execute('''
-	CREATE TABLE {tablename} (
+SQL = ''' 
+CREATE TABLE {tablename} (
 	"id" 					SERIAL PRIMARY KEY,
 	"timestamp"				TIMESTAMP WITH TIME ZONE,
 	"itemId" 				BIGINT,
@@ -45,6 +45,7 @@ cur.execute('''
 	"sellerInfo.feedbackScore"				INTEGER,
 	"sellerInfo.positiveFeedbackPercent"	DECIMAL,
 	"sellerInfo.sellerUserName"				TEXT,
+	"sellerInfo.topRatedSeller"				BOOLEAN,
 	"shippingInfo.expeditedShipping"					BOOLEAN,
 	"shippingInfo.shipToLocations"						TEXT,	
 	"shippingInfo.shippingServiceCost.value"			DECIMAL,
@@ -59,11 +60,13 @@ cur.execute('''
 	"viewItemURL"			TEXT,
 	
 	"sellingStatus.currentPrice.value"			DECIMAL,	
+	"startprice"								DECIMAL,
+	"endPrice"									DECIMAL,
 	"sellingStatus.bidCount" 					SMALLINT,
 	"sellingStatus.sellingState"				TEXT,
 	"paymentMethod"								TEXT,
 	
-	"isMultiVariationListing"	BOOLEAN,
+	"isMultiVariationListing"			BOOLEAN,
 	
 	"condition"							TEXT,
 	"condition.conditionId"				INTEGER,
@@ -71,19 +74,15 @@ cur.execute('''
 	"listingInfo.listingType"			TEXT,
 	"listingInfo.gift"					BOOLEAN,
 	"listingInfo.bestOfferEnabled"		BOOLEAN,
-	"listingInfo.startTime"				TIMESTAMP WITH TIME ZONE,
 	"listingInfo.buyItNowAvailable"		BOOLEAN,
-	"listingInfo.endTime"				TIMESTAMP WITH TIME ZONE,
-	"conditiondescription"				TEXT,
-	"startprice"						DECIMAL,
 	"listingInfo.buyItNowPrice.value"	DECIMAL,
-	"endprice"							DECIMAL
+	"listingInfo.startTime"				TIMESTAMP WITH TIME ZONE,
+	"listingInfo.endTime"				TIMESTAMP WITH TIME ZONE,
+	"conditiondescription"				TEXT
 )
-'''.format(tablename=tablename))
+'''.format(tablename=tablename)
 
-# cur.execute("SELECT * FROM test;")
-# cur.fetchone()
-
+cur.execute(SQL)
 
 conn.commit()
 cur.close()

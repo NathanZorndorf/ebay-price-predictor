@@ -43,16 +43,18 @@ class EbaySpider(scrapy.Spider):
 
         # ---- HARDCODED FOR DEV/TESTING PURPOSES ---- #
         # urls = [
-        #     'http://www.ebay.com/itm/Nikon-D750-24-3-MP-Digital-SLR-Camera-Black-Body-Only-Used-/222447550032',
-        #     'http://www.ebay.com/itm/Canon-EOS-5D-Mark-II-24-105mm-Lens-and-Camera-Bag-/272592893520',
-        #     'http://www.ebay.com/itm/DJI-Inspire-1-V1-0-4K-X3-Camera-and-3-Axis-Gimbal-Drone-Quadcopter-Extras-/302257646034',
-        #     'http://www.ebay.com/itm/Samsung-NX-NX1-28-2-MP-Digital-Camera-Black-Kit-w-50-200mm-OIS-Lens-/222445254405',
-        #     'http://www.ebay.com/itm/Panasonic-AJ-HDC27F-2-3-HD-DVCPRO-Varicam-Video-Camera-Camcorder-w-Viewfinder-/142319141084',
-        #     'http://www.ebay.com/itm/High-Speed-Pin-Registered-Super-8-Cartridge-Camera-Very-Rare-Logmar-Wilcam-/252816500866',
-        #     'http://www.ebay.com/itm/Carl-Zeiss-Planar-T-80mm-f-2-AF-Lens-Contax-645-camera-/332163276401',
-        #     'http://www.ebay.com/itm/DJI-Mavic-Pro-Folding-Drone-4K-Stabilized-Camera-Active-Track-Avoidance-GPS-/252821264198',
-        #     'http://www.ebay.com/itm/Nikon-D40-6-1MP-Digital-SLR-Camera-Black-Kit-w-AF-S-DX-18-55mm-Lens-/262891375158'
+            # "http://offer.ebay.com/ws/eBayISAPI.dll?ViewBids&item=192140341983&rt=nc&_trksid=p2047675.l2565"
+            # 'http://www.ebay.com/itm/Nikon-D750-24-3-MP-Digital-SLR-Camera-Black-Body-Only-Used-/222447550032',
+            # 'http://www.ebay.com/itm/Canon-EOS-5D-Mark-II-24-105mm-Lens-and-Camera-Bag-/272592893520',
+            # 'http://www.ebay.com/itm/DJI-Inspire-1-V1-0-4K-X3-Camera-and-3-Axis-Gimbal-Drone-Quadcopter-Extras-/302257646034',
+            # 'http://www.ebay.com/itm/Samsung-NX-NX1-28-2-MP-Digital-Camera-Black-Kit-w-50-200mm-OIS-Lens-/222445254405',
+            # 'http://www.ebay.com/itm/Panasonic-AJ-HDC27F-2-3-HD-DVCPRO-Varicam-Video-Camera-Camcorder-w-Viewfinder-/142319141084',
+            # 'http://www.ebay.com/itm/High-Speed-Pin-Registered-Super-8-Cartridge-Camera-Very-Rare-Logmar-Wilcam-/252816500866',
+            # 'http://www.ebay.com/itm/Carl-Zeiss-Planar-T-80mm-f-2-AF-Lens-Contax-645-camera-/332163276401',
+            # 'http://www.ebay.com/itm/DJI-Mavic-Pro-Folding-Drone-4K-Stabilized-Camera-Active-Track-Avoidance-GPS-/252821264198',
+            # 'http://www.ebay.com/itm/Nikon-D40-6-1MP-Digital-SLR-Camera-Black-Kit-w-AF-S-DX-18-55mm-Lens-/262891375158'
         # ]
+        # urls = [("http://www.ebay.com/itm/Canon-EOS-7D-18-0-MP-Digital-SLR-Camera-Black-Body-Only-/192140341983",'Auction')]
 
         # THIS CAN RETURN A GENERATOR or "LIST OF REQUESTS"
         # https://doc.scrapy.org/en/latest/topics/spiders.html#scrapy.spiders.Spider.start_requests
@@ -84,12 +86,16 @@ class EbaySpider(scrapy.Spider):
         
 
         if listingType == 'Auction' or listingType == 'AuctionWithBIN':
-            bid_count = response.xpath("//a[@id='vi-VR-bid-lnk']/span[1]/text()").extract_first()
+            bid_count = int(response.xpath("//a[@id='vi-VR-bid-lnk']/span[1]/text()").extract_first())
             bid_history_url = response.xpath("//a[@id='vi-VR-bid-lnk']/@href").extract_first()
 
             if bid_history_url != None:
 
                 if bid_count > 0: # this prevents us from making an unecessary requests if there is no startPrice (because no bids)                
+
+                    logging.debug('bid_history_url = {}'.format(bid_history_url))
+                    logging.debug('bid_count = {}'.format(bid_count))
+
                     return scrapy.Request(url=bid_history_url, callback=self.parse_start_price, meta={'item':item})
 
                 else: # if the item had 0 bids             
@@ -107,7 +113,7 @@ class EbaySpider(scrapy.Spider):
 
 
     def parse_start_price(self, response):
-        
+
         item = response.meta['item'] # grab item attribute from response 
 
 
@@ -128,9 +134,10 @@ class EbaySpider(scrapy.Spider):
         # Item start price - ebay has (at least) 2 different types of HTML pages for the startPrice info
         # try grabbing first xpath 
         start_price_xpath = "//tr[@id='viznobrd']/td[@class='contentValueFont'][1]/text()"        
-        for item in response.xpath(start_price_xpath).extract():
-            logging.debug('item in FIRST XPATH = '.format(item))
         startPrice = response.xpath(start_price_xpath).extract_first(default='NULL') 
+        
+        logging.debug("startPrice = {}".format(startPrice))
+
         if startPrice != 'NULL': # the first x path worked 
             startPrice = float(startPrice.split('$')[1].replace(',',''))
             item['startPrice'] = startPrice

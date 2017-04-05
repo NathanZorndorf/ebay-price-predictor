@@ -41,12 +41,12 @@ def init_options():
 def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
     # --- set up query parameters ; COULD NOT GET THIS TO HAVE ANY AFFECT
-    # endTimeFrom = '2017-03-30 11:10:00'
-    # endTimeTo   = '2017-04-02 12:00:00'
-    # endTimeFrom = datetime.datetime.strptime(endTimeFrom, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
-    # endTimeTo   = datetime.datetime.strptime(endTimeTo, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
-    # print 'endTimeFrom:',endTimeFrom
-    # print 'endTimeTo:',endTimeTo
+    endTimeFrom = '2017-01-12 00:00:00'
+    endTimeTo   = '2017-04-4 00:00:00'
+    endTimeFrom = datetime.datetime.strptime(endTimeFrom, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
+    endTimeTo   = datetime.datetime.strptime(endTimeTo, "%Y-%m-%d %H:%M:%S").isoformat() + '.000Z'
+    print 'endTimeFrom:',endTimeFrom
+    print 'endTimeTo:',endTimeTo
 
 
     # ------ CONNECT TO POSTGRES DATABSE ----- #
@@ -78,21 +78,21 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                     {'name': 'LocatedIn', 'value': 'US'},
                     {'name': 'Currency', 'value':'USD'},
 
-                    {'name': 'Condition', 'value': 'Used'},
+                    # {'name': 'Condition', 'value': 'Used'},
                     {'name': 'MinPrice',  'value': minPrice},
                     {'name': 'MaxPrice',  'value': maxPrice},
 
                     # {'name': 'ListingType', 'value':'Auction'},
                     # {'name': 'ListingType', 'value':'AuctionWithBIN'},
-                    {'name': 'ListingType', 'value':'FixedPrice'},
+                    # {'name': 'ListingType', 'value':'FixedPrice'},
                     # {'name': 'SoldItemsOnly', 'value':'true'},
 
                     {'name': 'HideDuplicateItems', 'value':'true'},
 
                     # {'name': 'SellerBusinessType', 'value' : 'Private'},
                     
-                    # {'name': 'EndTimeFrom', 'value': endTimeFrom},
-                    # {'name': 'EndTimeTo',   'value': endTimeTo}
+                    {'name': 'EndTimeFrom', 'value': endTimeFrom},
+                    {'name': 'EndTimeTo',   'value': endTimeTo}
                 ],                
                 'outputSelector': [
                   'PictureURLLarge',
@@ -112,7 +112,7 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
             # if failure, print detail s
             if dic['ack'] != 'Success':
-                print 'ack: ',dic['Ack']
+                print 'ack: ',dic['ack']
                 print 'error message: ',dic['errorMessage']
 
             if pageNum == 1:
@@ -133,7 +133,7 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
             timestamp = dic['timestamp'] # Example : '2017-03-25T01:58:10.520Z'
             ebay_data_dict['timestamp'] = timestamp 
 
-            for entryNum in range(len(dic['searchResult']['item'])):
+            for entryNum in range(len(dic['searchResult']['item'])-1):
                 for key1,val1 in dic['searchResult']['item'][entryNum].iteritems():
                     if type(val1) is dict:
                         for key2,val2 in val1.iteritems():
@@ -181,13 +181,14 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 "discountPriceInfo.originalRetailPrice._currencyId", \
                 "discountPriceInfo.originalRetailPrice.value", \
                 "discountPriceInfo.soldOffEbay", \
+                "discountPriceInfo.minimumAdvertisedPriceExposure",\
                 ]
                 for key in bad_keys:
                     if key in ebay_data_dict.keys():
                         ebay_data_dict.pop(key)
 
                 # ------ ENTER EBAY DATA INTO TABLE ----- #
-                currentEntryNum = entryNum + pageNum * entriesPerPage
+                currentEntryNum = entryNum + ((pageNum-1) * entriesPerPage)
                 totalEntriesNum = dic['paginationOutput']['totalEntries']
                 # print 'sesarchResult._count:{}'.format(dic['searchResult']['_count'])
                 print "inserting item #{} out of {} into table {} in database {}".format(currentEntryNum,totalEntriesNum, TABLE_NAME, dbname)

@@ -6,6 +6,8 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import psycopg2
+import logging
+
 
 class EbayPostgresPipeline(object):
 
@@ -44,23 +46,27 @@ class EbayPostgresPipeline(object):
 
 		'''
 
+
+
 		SQL = '''
 		UPDATE ONLY {table_name} as ci
-		SET conditiondescription = '{condition}',
-			startprice = {start_price},
-			duration = '{duration}',
-			endprice = {end_price}
-		WHERE ci."itemId" = {itemId};
+		SET conditiondescription='{condition}',
+			startprice={start_price}
+		WHERE ci."itemId"={item_id};
 		'''.format( table_name=self.postgres_table, 
 					condition=item['conditionDescription'], 
 					start_price=item['startPrice'],
-					duration=item['duration'],
-					end_price=item['endPrice'],										
-					itemId = item['itemId'] 
+					item_id=item['itemId'] 
 			) 
 
-		self.cur.execute(SQL) # execute SQL, and commit changes 
-		self.conn.commit()
+
+		try:
+			self.cur.execute(SQL) # execute SQL, and commit changes 
+			self.conn.commit()
+		except:
+			logging.debug('Error with executing SQL statement.\n SQL = {}'.format(SQL))
+			self.conn.rollback()
+
 
 		return item
 
