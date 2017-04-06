@@ -1,0 +1,455 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\froman\fcharset0 Palatino-Roman;
+\f3\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red85\green142\blue40;\red0\green0\blue0;
+\red255\green83\blue8;\red133\green0\blue175;\red174\green0\blue240;\red85\green142\blue40;\red255\green255\blue255;
+\red255\green39\blue18;\red63\green105\blue30;\red255\green255\blue51;\red179\green179\blue179;\red128\green128\blue128;
+\red38\green38\blue38;\red255\green255\blue255;\red63\green105\blue30;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgenericrgb\c33333\c55686\c15686;\csgenericrgb\c0\c0\c0;
+\csgenericrgb\c100000\c32549\c3137;\csgenericrgb\c52157\c0\c68627;\csgenericrgb\c68235\c0\c94118;\csgenericrgb\c33333\c55686\c15686;\csgenericrgb\c100000\c100000\c100000;
+\csgenericrgb\c100000\c15294\c7059;\csgenericrgb\c24706\c41176\c11765;\csgenericrgb\c100000\c100000\c20000;\csgray\c75407;\csgray\c57415;
+\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;\csgenericrgb\c24706\c41176\c11765;}
+\margl1440\margr1440\vieww18620\viewh8940\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 eBay Capstone Work Journal:\
+I chose cameras because:\
+\pard\pardeftab720\partightenfactor0
+\cf2 \expnd0\expndtw0\kerning0
+a) they can be evaluated by using well-structured data that lends itself well to machine learning techniques\
+b) they are representable as a set of easily quantified parameters\
+c) they represent a large market of used items\
+d) their prices are predictable and relatively stable for short-term horizons. \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \kerning1\expnd0\expndtw0 \
+\
+3/21 - 3/27:\
+- Experimented with MongoDB, didn\'92t like fact that data was stored in JSON, and the fact that some rows can have different columns.\
+- Chose postgresql due to familiarity with SQL, flexible types, \
+- setup postresql ebay database with completed_items table under user: nathan\
+- Set up ebay API to get completed items and store data into postgres database. \
+- set up multi-processed web scraper with scrapy and multiprocessing.Pool to update \'93condition\'94 fields in ebay table from scraped item condition data. Sometimes the item doesn\'92t have a condition, in which case, an empty string is put into the field. \
+\
+3/28:\
+Goal:\
+- Setup up Scrapy spider. \
+	- Following tutorial, when I ran scrapy crawl ebay, I got TypeError: \'91float\'92 object is not itterable. \
+		- Solved problem by updating scrapy using conda. Only problem is that I also updated scrapy using conda system-wide, which scrapy documentation told me not to do (I updated before reading that). \
+	- Creating pipeline.\
+		- created scrapy->postgres pipeline class for storing condition data into the ebay table \
+		- added pipeline to settings.py\
+		- Need to read itemId,URL from ebay table (x)\
+		- Need to set options for throttling (x)\
+		- Set postgres config in settings.py (x)\
+	- Test spider with hardcoded ebay urls\
+		- Worked but it\'92s slow (x)\
+		- Speed up scrapy crawl ebay  (X)\
+		- Create log of errors from scraps (X)\
+\
+3/29:\
+- Pull postgres data into pandas data frame using sqlalchemy (x)\
+	- Deleted duplicates in completed_items table (x)\
+	
+\f1 \cf3 DELETE FROM tablename\
+	WHERE id IN \
+		(SELECT id FROM (SELECT id, ROW_NUMBER() OVER (partition BY column1, column2, column3 ORDER BY id) AS rnum FROM tablename) \
+		as t WHERE t.rnum > 1);\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 or specifically for deleting duplicate itemId :\cf3 \
+\
+DELETE FROM completed_items_v2 WHERE id IN (SELECT id FROM (SELECT ci."id", ROW_NUMBER() OVER (partition BY ci."itemId" ORDER BY ci."id") AS rnum FROM completed_items_v2 as ci) as t WHERE t.rnum > 1);\cf5 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0 \cf0 \
+\
+- Light cleaning (x)\
+- Light EDA (x)\
+- Discovered that I had a typo in my find-completed-listings.py, which was causing the \'93categoryId\'94 search in my filter to not work.\
+Therefore I was getting completed items from every ebay category (only filter I was using was the keyword \'91camera\'92). \
+	- apiy_request dictionary had \'91CategoryId\'94 which should have been \'93categoryId\'94. \
+	- Not sure what to do now. I can change the categoryId to the right category and then start my api requests from the max  But then I will get a lot of duplicate items. \
+	- I think the best strategy is to just copy my old postgres table into a new table so I don\'92t lose my searches thus far. \
+	- Then filter that table by the categoryId in SQL. \
+	- Then begin filling that table with new data starting at a low price, using no keywords. \
+	\
+- Vectorize title with CountVectorizer (x) \
+- Use NLP features + model to predict sold status (x)\
+	- Baseline accuracy = 0.897\
+	- First pass model (random forest) accuracy = 0.913\
+\
+3/30:\
+- Create new table\
+	- Copy completed_items (x)\
+	- Filter: (x)\
+		- categoryId = 15230 # film cameras\
+		- categoryId = 31388 # digital cameras \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1 \cf0 		\cf3 DELETE FROM completed_items_15230_31388 as ci WHERE ci."primaryCategory.categoryId"!=31388 AND ci."primaryCategory.categoryId"!=15230;
+\f0 \cf0 \
+	- OK that didn\'92t work. When we copy completed_items, a serial (id_seq table) was not created. Therefore, in our completed_items_15230_31388 table, the id column was not a serial, and was not being automatically generated when we inserted values. \
+		- I copied old table to new table. Then I created a new serial primary key column. Then I deleted the old id column. Then I deleted duplicate rows (rows with duplicate itemId values). \
+\
+\
+- using categoryId = 15230, 31388 and no keywords, query starting at minPrice = 20, up until 2500 (x)\
+	- For some reason, I was able to query as much data using the ebay API with only one dev API key. Not sure why. \
+\
+\
+Goals for 3/31 and weekend:\
+- Use scrapy to do recursive scrap and get starting bid price.\
+- Continue NLP exploration and modeling with different features and techniques.\
+\
+3/31:\
+- What happens to values returned or yielded from parse() and parse_start_prce() in spider?\
+- Where to instantiate Item()? \
+- How to update item class instance in spider within different callback functions? \
+\
+4/1\
+- Got nested scrape working, but now ebay is requesting captcha every time I want to scrape. \
+- Using cactusVPN, I was able to start scraping again. \
+	- VPN disconnects if I send too many requests too fast. Using these settings, it seems to work:\
+		
+\f1 \cf6 AUTOTHROTTLE_START_DELAY = 0.5\
+		AUTOTHROTTLE_MAX_DELAY = 2\
+		AUTOTHROTTLE_TARGET_CONCURRENCY = 2\
+		CONCURRENT_REQUESTS = 2\
+		DOWNLOAD_DELAY = 0.9
+\f0 \cf0 \
+- So I\'92m collecting itemId, conditiondescription, duration, and startPrice now. \
+\
+\
+I was thinking about what factors we\'92re going to consider in the model. I think that, along with completed listings, a big factor would be the other listings that are active at the time the model does it\'92s calculation for a specific item. \
+\
+The reason we want to see which items were listed concurrently is because (I would think) you would want to weight the factors from the concurrent listings more than the previously completed listings. Like if you are selling a Nikon ec380, and there is already a Nikon ec380 listed with a startPrice of $300, and all factors being equal, you probably don\'92t want to list it for much more than $300. Even if historically those cameras sell with startPrice of $400, you probably don\'92t want to list it for $400. Therefore I want to weight the concurrent listings factors more than the completed listings. \
+\
+Is it possible to do something like this? Is it even smart to do something like this? \
+\
+Also, I don\'92t see anyone doing this in the white papers that have been released previously for ebay listings end price predictions. Could be a novel method. \
+\
+\
+(You could figure out which items are concurrent by looking at the startTime and endTime columns. You could then create a new column called concurrentGroupNumber, that would be generated by incrementing through the first startTime to the last startTime in equally spaced chunks. In each chunk, you look at all the listings that are active in that chunk, and for each of those listings, assign the same groupNumber to them. That allows you to see concurrent listings.)\
+\
+Goals for 4/1 and 4/2:\
+- Scrape more data. Current number of rows in 
+\f1 \cf7 completed_items_15230_31388 is 46225. 
+\f0 \cf0 \
+	- Collect completed_items auctions for starting at 3/30 at 11:10:00, until 4/2 12:00:00 (x)\
+	- collect buy it now auctions of prices from 20 to 2500 and store in table completed_items_15230_31388 (x) \
+		- 
+\f1 \cf7 \{'name': 'ListingType', 'value':'AuctionWithBIN'\},
+\f0 \cf0 \
+	- Collect fixedPrice auctions of prices from 20 to 2500 and store in table completed_items_15230_31388 \
+- Don\'92t know if \'91FixedPrice\'92 listings were sold or if they just ended. \
+	- Okay this is a big problem. It seems like \'91AuctionWithBIN\'92 is like a deprecated feature because if you go on ebay.com now, you can only find auctions OR BuyItNow listings, but there don\'92t seem to be listings that are AuctionWithBIN. \
+	- So I might have to just scrape data for the Buy It Now listings. \
+		- Although the only problem I\'92m seeing here is that you can\'92t find Buy It Now listings from stores\'85 which is a problem because stores make up a lot of the business.\
+\
+- I experimented with changing the code of connections in:\
+
+\f1  /Users/Naekid/anaconda3/envs/dsi/lib/python2.7/site-packages/ebaysdk/connection.py
+\f0 \
+and then running the samples in:\
+
+\f1 /Users/Naekid/anaconda3/envs/dsi/lib/python2.7/site-packages/ebaysdk-2.1.4-py2.7.egg/samples\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0 \cf0 For some reason, the samples in .egg use the code in the other ebaysdk/ directory. Who knows. \
+I created a GitHub ticket on the python SDK page. I also created a ebay developers forum post. \
+Here\'92s a sample URI HTTP GET with the correct sellingState:\
+{\field{\*\fldinst{HYPERLINK "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.7.0&SECURITY-APPNAME=nathanzo-ebaypric-PRD-cbed4d450-05d217d8&RESPONSE-DATA-FORMAT=XML&keywords=222461424089"}}{\fldrslt http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.7.0&SECURITY-APPNAME=nathanzo-ebaypric-PRD-cbed4d450-05d217d8&RESPONSE-DATA-FORMAT=XML&keywords=222461424089}}\
+s\
+I\'92ve decided that the best course of action is to move on to sending my own HTTP GET requests to ebay using the structure outlined in their API documentation. \
+\
+4/3:\
+- Discovered bug that was causing incorrect sellingState to be returned. The problem was that the the 
+\f1 X-EBAY-SOA-SERVICE-VERSION 
+\f0 Header field in the ebaySDK was set to 1.0.0. When I hardcoded it to 1.13.0, that fixed the problem. Also, you should be able to change the version in the ebay.yaml file, but that didn\'92t work for me.\
+- Wrote my own wrapper for Ebay API to send findCompletedItems requests to specific itemId, retreive sellingState, and update SQL table. \
+- scrape ebay for condition information of FixedPrice items. \
+\
+- my-ebay-api-port/development.ipynb is for using HTTP GET ebay API to update sellingState for items that are already in my ebay database. \
+- scrapy is used to get condition description for all items, and startPrice for items that had > 0 bid_count.\
+	- scrapy is not getting startPrice successfully. \
+\
+\
+4/4:\
+- I\'92m thinking of starting a new database from scratch since the old one is super messy. \
+	- First objective is to get the startPrice.\
+	- Once I have the startPrice, then I can use find-completed-items on \'91Auction\'92,\'92AuctionWithBIN\'92,\'92FixedPrice\'92,\'92StoreInventory\'92\
+\
+- Making new spider: ebay_spider_v2\
+	- All I need to scrape is the conditionDesription, startPrice \
+- Turns out the two different bid history pages are due to 2 different version of the page. For example:\
+	{\field{\*\fldinst{HYPERLINK "http://www.ebay.com/bfl/viewbids/291989472205?item=291989472205&rt=nc&_trksid=p2047675.l2565"}}{\fldrslt http://www.ebay.com/bfl/viewbids/291989472205?item=291989472205&rt=nc&_trksid=p2047675.l2565}}\
+	{\field{\*\fldinst{HYPERLINK "http://offer.ebay.com/ws/eBayISAPI.dll?ViewBids&item=291989472205&rt=nc&_trksid=p2047675.l2565"}}{\fldrslt http://offer.ebay.com/ws/eBayISAPI.dll?ViewBids&item=291989472205&rt=nc&_trksid=p2047675.l2565}}\
+Slightly different - I don\'92t know how I\'92m getting these two. But it\'92s not a big deal. We can just grab the entire HTML of either page, and use this code to get the startPrice:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1 \cf8 bid_history_items = response.xpath("//span/text()").extract()\
+if bid_history_items:\
+	for i,text in enumerate(bid_history_items):\
+		if text == 'Starting Price':\
+			startPrice = bid_history_items[i+1]\
+			item['startPrice'] = float(startPrice.replace('$',''))\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0 \cf0 It seems to work. \
+\
+- I also found out that sometimes if a listing is an auction but ends with a BuyItNow, the findCompletedItems does not always show that it was a \'91AuctionWithBIN\'92 or that it ended with a BuyItNow. It\'92s also going to require two nested scrapes to get the start price. \
+\cf9 \cb10 I will have to investigate this further, but looking into listings of type \'91AuctionWithBIN\'92\
+\cf4 \cb1 And seeing if they are fucked up.\cf0 \
+\
+\
+4/5:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f2 \cf11 - I think that a unique contribution to this problem would be to utilize concurrent listings, as well as completed listings.\
+
+\fs28 	- 
+\fs24 Calculate 
+\i similar
+\i0  (via NLP), concurrent (defined below) listing mean/median starting price. This alone is a useful application of ML.\
+	- Calculate similar completed listing mean/median start price. \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0 \cf0 \
+
+\f2 \cf12 \cb13 It might be a good idea to consider the price of similar listings 
+\i at the time of posting
+\i0  a given listing, but that would require lots of extra scraping. \cf4 \cb1 \
+\cf12 \cb14 So instead, we\'92ll just consider the 
+\i start price 
+\i0 of concurrent listings.\cf0 \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs28 \cf11 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs24 \cf0 \
+FEATURE ENGINEERING for mean/median startPrice of Concurrent Listings, and mean/median of startPrice and endPrice of Completed Listings. \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1 \cf0 FIRST create 4 new columns in dataframe \
+	similarConcurrentListing.meanStartPrice\
+	similarConcurrentListing.medianStartPrice\
+	similarCompletedListing.meanStartPrice\
+	similarCompletedListing.medianStartPrice\
+	similarCompletedListing.meanEndPrice\
+	similarCompletedListing.meanEndPrice\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f2 \cf0 \
+We need to define concurrent listings.
+\f1 \
+\
+
+\f2 Filter for Concurrent and Completed Listings
+\f1 \
+1 Method - \
+	if listing2.starTime > listing1.startTime, then l2.startTime should be < H1 hours after l1.starTime \
+	If listing2.startTime < listing1.startTime, then l2.endTime should be > H2 hours after listing1.startTime\
+We could just choose H1 and H2, but maybe EDA is a good way of finding this best time. We could also use H1 and H2 as hyper parameters.\
+\
+sort dataframe by startTime DESC \
+for listing1 in listings:\
+	for listing2 in listing: # only consider concurrent and past listings (exclude future listings)\
+		if listing2.startTime < listing1.endTime and listing2.endTime > listing1.startTime:\
+			# listing1 and listing2 are concurrent listings\
+			add to dataframe with [\'91concurrent\'92]=1		\
+				\
+		elif listing2.endTime <= listing1.startTime:\
+			# listing2 is a past listing for listing1 \
+			add to data frame with [\'91concurrent\'92]=0\
+\
+\
+2 Method - \
+Actually instead, let\'92s frame the problem so that we calculate the percentage of overlap between the time periods of l1 and l2. Define l2 to be a concurrent listing if it\'92s percentage overlap with l1 is > H, where H is a number between 0 and 1. H could be a hyper parameter to the modeling pipeline. \
+\
+sort dataframe by startTime DESC \
+for listing1 in listings:\
+	for listing2 in listing: # only consider concurrent and past listings (exclude future listings)\
+		if listing2.startTime < listing1.endTime and listing2.endTime > listing1.startTime:\
+			# listing1 and listing2 are concurrent listings\
+			add to dataframe with [\'91concurrent\'92]=1		\
+				\
+		elif listing2.endTime <= listing1.startTime:\
+			# listing2 is a past listing for listing1 \
+			add to data frame with [\'91concurrent\'92]=0\
+\
+3 Method - \
+sort dataframe by startTime DESC\
+for listing1 in listings:\
+	create new dataframe for concurrent and completed listings (no future listings)\
+	add listing1 to new dataframe\
+	for listing2 in listings:\
+		if listing2.startTime < listing1.startTime and listing2.endTime > listing1.startTime:\
+			add listing2 to new dataframe with [\'91concurrent\'92]=1\
+		else:\
+			add listing2 to new dataframe with [\'91concurrent\'92]=0
+\f2 \
+\
+For EDA on that aspect, you can Vrushank suggested plotting percentage of concurrent time (x-axis) vs. number of listings within that time, although that wouldn\'92t tell you how much the hyper parameter affects the accuracy of the model.
+\f1 \
+\
+\
+
+\f2 VECTORIZE
+\f1 \
+	Vectorize new dataframe (BoW, TFIDF, shingles, sPacy) as vdf\
+	Calculate similarity (Jaccard, Cosine), between listing1 and all other listings in vdf\
+	Set a threshold for similairty so that only items OVER that threshold will be considered in the model, i.e. filter vdf so that we only are considering listings very similar to the original listing\
+	# Now you have a vectorized df of listings similar to listing1\
+	calculate mean/median of concurrent=1 listings and concurrent=0 listings, seperately\
+	You now have 2 new features for your listing, which you can add as new columns to the row for listing1 in the original dataframe\
+	\
+\
+\
+
+\f2 Just had an idea. Essentially, instead of finding similar titles myself, I use ebay\'92s search to find similar titles using topics created by LDA to find the commonly searched keywords from the titles that I already have in my database. Then, for each LDA topic/keyword, you search bay\'92s current and completed listings. But then you still have to calculate similarity, because your alternative is to just take the top n searches from ebay\'92s results, and obviously some of those results will be very different to each other. But using ebay\'92s search results combined with my own similarity calculation might be more effective than JUST using my own similarity calculation. Let\'92s try using my own similarity calculation first because we will have to do that anyway. 
+\f1 \
+\
+		\
+
+\f2 \cf9 \cb10 Problem: People can list items as auctions, and update those listings midway through to have BuyItNow available, but this won\'92t show up in a grab from the ebay API. \
+\cf0 \cb1 From the documentation:\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f3\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec15 Auction\
+Competitive-bid online auction format. Buyers engage in competitive bidding, 
+\b although Buy It Now may be offered as long as no valid bids have been placed
+\b0 .\
+
+\i0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 This is happening for certain listings, such as 332172404108. \
+
+\b It has a listingType of \'91Auction\'92, no \'91startPrice\'92, BuyItNowAvailable=\'91f\'92, and bidCount=1, then that final selling bid was a Buy It Now.
+\b0  \
+This must have happened because the user updated their listing after it was already posted and online for some time. \
+\
+xpath for \'91see original listing\'92 for these pages:\
+\cf17 //span[contains(@class, 'vi-inl-lnk')]//@href\
+\cf0 \
+There are two options here.\
+1. We could go and scrape for the start price, and then make two listings out of each of these listings: 1 would be an \'91Auction\'92 listing that did NOT sell, and had the original start price. And the other would be a \'91AuctionWithBIN\'92 that DID sell. \
+2. We just make the listing a \'91AuctionWithBIN\'92 that DID sell, with a start price equal to the sale price.\
+\
+Let\'92s see how many of these listings there are. if there are a lot, that gives more reason to do option 1, because if we don\'92t, we are losing out on significant information with the \'91Auction\'92 listings that did not sell. But it\'92s going to take a lot of rescraping to get those, and just adds a shit ton of complications.\
+The number of listings (so far on 4/5) is 4,432. \
+I mean it\'92s not a big deal to go with option 2, because we\'92re just kind of pretending those \'91Auction\'92 listings didn\'92t exist, which isn\'92t horrible.\
+\
+So to deal with these listings with option 2:\
+# listingType of \'91Auction\'92, no \'91startPrice\'92, BuyItNowAvailable=\'91f\'92, and bidCount=1\
+mask = (df['listingInfo.listingType']=='Auction')\\\
+        & (np.isnan(df['startprice'])) \\\
+        & (df['sellingStatus.bidCount']==1.0)\
+dfm = df[mask]\
+dfm[\'91listingInfo.listingType\'92] = \'91AuctionWithBIN\'92\
+dfm[\'91listingInfo.listingType\'92] = \'91AuctionWithBIN\'92\
+\
+OKAY and this new information:\
+\pard\pardeftab720\sl300\partightenfactor0
+
+\f3\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec15 AuctionWithBIN\
+Same as Auction format, but Buy It Now is enabled. AuctionWithBIN changes to Auction if a valid bid has been placed on the item.
+\i0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 Which means we have funky information BUT here is what I realized. Because ebay doesn\'92t update \'91Auction\'92 to \'91AuctionWithBIN\'92 for listings where the user updated the listing type midway through\'85\
+\
+\'85We need to create our own 
+\b endListingType
+\b0 , that concerns the end state of the listing. \
+IF an item did NOT SELL, then we care about the END state (that\'92s the only state there is). \
+	- if sellingState = \'91EndedWithoutSales\'92:\
+		- 
+\b endListingType 
+\b0 = listingInfo.listingType\
+		- 
+\b startprice 
+\b0 = sellingStatus.currentPrice.value\
+IF an item SOLD, then we care how about the END state (the state of the item when it was sold)\
+	- else if sellingState = \'91EndedWithSales\'92:\
+		- If listingInfo.listingType was \'91Auction\'92:\
+			- 
+\b if listingType= \'91Auction\'92,  \'91startprice\'92=NaN,  \'92bidCount\'92=1.0 (because user can only change to BIN w/ 0 bids), then that final selling bid was a Buy It Now.
+\b0  This also catches the case where an AuctionWithBIN \
+				- 
+\b endListingType
+\b0  = \'91AuctionWithBIN\'92\
+				- 
+\b startprice
+\b0  = sellingStatus.currentPrice.value\
+			- 
+\b if listingType= \'91Auction\'92,  \'91startprice\'92 
+\fs32 !=
+\fs24  NaN\
+				- endListingType 
+\b0 = \'91Auction\'92\
+				- 
+\b startprice
+\b0  = startprice\
+		- if listingInfo.listingType = \'91AuctionWithBIN\'92:  # see note\
+			
+\b - endListingType 
+\b0 = \'91AuctionWithBIN\'92\
+			- 
+\b startprice
+\b0  = sellingStatus.currentPrice.value\
+# I believe this is only true for items that stayed as \'91AuctionWithBIN\'92 the entire life of the listing, and if I\'92m right\'85\
+# I\'92m looking for an \'91AuctionWithBIN\'92 that changed to an \'91Auction\'92 because someone put a bid, but then eventually it SOLD as BuyItNow.\
+# I don\'92t that exists because (from documentation): 
+\f3\i On most sites, 
+\b the Buy It Now option is removed (and this value returns false) once a valid bid is made on the associated item
+\b0  (a valid bid could be a bid above the reserve price). buyItNowAvailable will return "false" if the listing type is anything but "AuctionWithBIN". Please ignore buyItNowAvailable for fixed-price listings.
+\i0 \
+
+\f2 \
+	- if listingInfo.listingType= \'91FixedPrice\'92 or listingInfo.listingType= \'92StoreInventory\'92: # \'91FixedPrice\'92 means PURE BuyItNow, and no Auction available. \
+		-
+\b  endListingType 
+\b0 = \'91FixedPrice\'92 or \'91StoreInventory\'92\
+		- start price = sellingStatus.currentPrice.value 
+\f0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+\f2 Modeling Goals:\cf11 \
+\cf4 \
+- Different models for different listing types?\cf11 \
+\cf0 \
+- Experiment with different settings for CountVectorizer\
+	- Read up on CountVectorizer settings.\
+	- \
+- Experiment with different settings for Random Forest\
+	- Read up on Random Forest settings.\
+	- Read up on Gradient Boosted trees. \
+\
+- Use XGBoost. \
+\
+- Set up pipeline for using different vectorizer and vectorizer settings, different models, ensembles.\
+
+\f0 \
+\
+\
+\
+\
+\
+\
+\
+}

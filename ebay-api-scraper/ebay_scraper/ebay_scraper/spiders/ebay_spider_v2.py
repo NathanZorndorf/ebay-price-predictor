@@ -84,15 +84,13 @@ class EbaySpider(CrawlSpider):
 		# Scrape bid history URL in order to get startPrice 
 		bid_history_url = response.xpath("//a[@id='vi-VR-bid-lnk']/@href").extract_first()
 		if bid_history_url != None:
-			bid_count = response.xpath("//a[@id='vi-VR-bid-lnk']/span[1]/text()").extract_first()
+			bid_count = int(response.xpath("//a[@id='vi-VR-bid-lnk']/span[1]/text()").extract_first())
 			if bid_count > 0:
 				return scrapy.Request(url=bid_history_url, callback=self.parse_start_price, meta={'item':item})
+			else:
+				item['startPrice'] = 'NULL'
+				return item
 		else:
-			# account for weird case where item is an auction but sold with buy it now, and I have to do a double nested scrape		
-			# original_listing_url = response.xpath("//span[@class='vi-inl-lnk vi-cvip-prel3']/a/@href").extract_first()
-			# if original_listing_url != None:
-			# 	return scrapy.Request(url=original_listing_url, callback=self.parse_original_listing, meta={'item':item})
-			# else: # if 
 			item['startPrice'] = 'NULL'
 			return item
 
@@ -100,18 +98,6 @@ class EbaySpider(CrawlSpider):
 	def parse_start_price(self, response):
 		
 		item = response.meta['item']
-
-		# startPrice = response.xpath("//tr[@id='viznobrd']/td[@class='contentValueFont'][1]/text()").extract_first()
-		# if startPrice != None:
-		# 	startPrice = float(startPrice.split('$')[1])			
-		# else:
-		# 	startPrice = 'ERROR: there is a startprice, but xpath did not get it.'
-
-		# html = response.xpath("//html").extract()[0]
-		# html = html.split('$')[-1]
-		# dollars = html.split('.')[0]
-		# cents = html.split('.')[1][:2]
-		# startPrice = float('.'.join([dollars,cents]))
 
 		# 1st xpath attempt
 		startPrice = response.xpath("//tr[@id='viznobrd']/td[@class='contentValueFont'][1]/text()").extract_first()
@@ -137,20 +123,6 @@ class EbaySpider(CrawlSpider):
 		return item
 		
 
-
-	# only accounts for the weird case where listing is an auction but sold as buyitnow		
-	def parse_original_listing(self, response):
-
-		item = response.meta['item']
-
-		bid_history_url = response.xpath("//a[@id='vi-VR-bid-lnk']/@href").extract_first()
-		if bid_history_url != None:
-			bid_count = response.xpath("a[@id='vi-VR-bid-lnk']/span[@id='qty-test']/text()").extract_first()
-			if bid_count > 0:
-				return scrapy.Request(url=bid_history_url, callback=self.parse_start_price, meta={'item':item})
-		else:
-			item['startPrice'] = 'NULL'
-			return item
 
 
 
