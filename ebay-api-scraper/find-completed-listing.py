@@ -12,7 +12,7 @@ if numArgs < 1 or numArgs > 7:
     print 'ERROR: Not enough arguments. Please input "host",user",dbname","tablename",minPrice,maxPrice as arguments.'
     sys.exit()
 
-(host, user, dbname, TABLE_NAME,minPrice,maxPrice) = tuple(sys.argv[1:])
+(host, user, dbname, TABLE_NAME, minPrice, maxPrice) = tuple(sys.argv[1:])
 
 pagesToQuery = int(input('Enter number of pages to query:'))
 entriesPerPage = int(input('Enter number of entries per page to query:'))
@@ -190,14 +190,12 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
                 # ------ ENTER EBAY DATA INTO TABLE ----- #
                 currentEntryNum = entryNum + ((pageNum-1) * entriesPerPage)
                 totalEntriesNum = dic['paginationOutput']['totalEntries']
-                # print 'sesarchResult._count:{}'.format(dic['searchResult']['_count'])
                 print "inserting item #{} out of {} into table {} in database {}".format(currentEntryNum,totalEntriesNum, TABLE_NAME, dbname)
-                # print 'categoryId:'.format(ebay_data_dict['primaryCategory.categoryId'])
-                # pprint.pprint(ebay_data_dict)
+
+                pprint.pprint(ebay_data_dict)
+
                 keys = ['"{}"'.format(key) for key in ebay_data_dict.keys()] # surround key with quotes
                 values = ebay_data_dict.values() # extract values 
-
-
                 insert_statement = 'INSERT INTO {} (%s) values %s'.format(TABLE_NAME)
                 query = cur.mogrify(insert_statement, (AsIs(','.join(keys)), tuple(values)))
                 cur.execute(query)

@@ -1,15 +1,15 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\froman\fcharset0 Palatino-Roman;
-\f3\fswiss\fcharset0 ArialMT;}
+\f3\fmodern\fcharset0 Courier-Bold;\f4\fswiss\fcharset0 ArialMT;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red85\green142\blue40;\red0\green0\blue0;
-\red255\green83\blue8;\red133\green0\blue175;\red174\green0\blue240;\red85\green142\blue40;\red255\green255\blue255;
-\red255\green39\blue18;\red63\green105\blue30;\red255\green255\blue51;\red179\green179\blue179;\red128\green128\blue128;
-\red38\green38\blue38;\red255\green255\blue255;\red63\green105\blue30;\red0\green0\blue0;}
+\red255\green83\blue8;\red133\green0\blue175;\red174\green0\blue240;\red255\green255\blue255;\red255\green39\blue18;
+\red63\green105\blue30;\red255\green255\blue51;\red179\green179\blue179;\red128\green128\blue128;\red255\green250\blue131;
+\red38\green38\blue38;\red255\green255\blue255;\red194\green229\blue166;\red192\green237\blue254;}
 {\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgenericrgb\c33333\c55686\c15686;\csgenericrgb\c0\c0\c0;
-\csgenericrgb\c100000\c32549\c3137;\csgenericrgb\c52157\c0\c68627;\csgenericrgb\c68235\c0\c94118;\csgenericrgb\c33333\c55686\c15686;\csgenericrgb\c100000\c100000\c100000;
-\csgenericrgb\c100000\c15294\c7059;\csgenericrgb\c24706\c41176\c11765;\csgenericrgb\c100000\c100000\c20000;\csgray\c75407;\csgray\c57415;
-\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;\csgenericrgb\c24706\c41176\c11765;\cssrgb\c0\c0\c0;}
-\margl1440\margr1440\vieww18620\viewh8940\viewkind0
+\csgenericrgb\c100000\c32549\c3137;\csgenericrgb\c52157\c0\c68627;\csgenericrgb\c68235\c0\c94118;\csgenericrgb\c100000\c100000\c100000;\csgenericrgb\c100000\c15294\c7059;
+\csgenericrgb\c24706\c41176\c11765;\csgenericrgb\c100000\c100000\c20000;\csgray\c75407;\csgray\c57415;\csgenericrgb\c100000\c98039\c51373;
+\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;\csgenericrgb\c76078\c89804\c65098;\csgenericrgb\c75294\c92941\c99608;}
+\margl1440\margr1440\vieww18540\viewh8620\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 eBay Capstone Work Journal:\
@@ -157,7 +157,8 @@ and then running the samples in:\
 \f0 \cf0 For some reason, the samples in .egg use the code in the other ebaysdk/ directory. Who knows. \
 I created a GitHub ticket on the python SDK page. I also created a ebay developers forum post. \
 Here\'92s a sample URI HTTP GET with the correct sellingState:\
-{\field{\*\fldinst{HYPERLINK "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.7.0&SECURITY-APPNAME=nathanzo-ebaypric-PRD-cbed4d450-05d217d8&RESPONSE-DATA-FORMAT=XML&keywords=222461424089"}}{\fldrslt http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.7.0&SECURITY-APPNAME=nathanzo-ebaypric-PRD-cbed4d450-05d217d8&RESPONSE-DATA-FORMAT=XML&keywords=222461424089}}\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.7.0&SECURITY-APPNAME=nathanzo-ebaypric-PRD-cbed4d450-05d217d8&RESPONSE-DATA-FORMAT=XML&keywords=222461424089"}}{\fldrslt \cf0 http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.7.0&SECURITY-APPNAME=nathanzo-ebaypric-PRD-cbed4d450-05d217d8&RESPONSE-DATA-FORMAT=XML&keywords=222461424089}}\
 s\
 I\'92ve decided that the best course of action is to move on to sending my own HTTP GET requests to ebay using the structure outlined in their API documentation. \
 \
@@ -186,7 +187,7 @@ I\'92ve decided that the best course of action is to move on to sending my own H
 Slightly different - I don\'92t know how I\'92m getting these two. But it\'92s not a big deal. We can just grab the entire HTML of either page, and use this code to get the startPrice:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f1 \cf8 bid_history_items = response.xpath("//span/text()").extract()\
+\f1 \cf3 bid_history_items = response.xpath("//span/text()").extract()\
 if bid_history_items:\
 	for i,text in enumerate(bid_history_items):\
 		if text == 'Starting Price':\
@@ -198,14 +199,15 @@ if bid_history_items:\
 \f0 \cf0 It seems to work. \
 \
 - I also found out that sometimes if a listing is an auction but ends with a BuyItNow, the findCompletedItems does not always show that it was a \'91AuctionWithBIN\'92 or that it ended with a BuyItNow. It\'92s also going to require two nested scrapes to get the start price. \
-\cf9 \cb10 I will have to investigate this further, but looking into listings of type \'91AuctionWithBIN\'92\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf8 \cb9 I will have to investigate this further, but looking into listings of type \'91AuctionWithBIN\'92\
 \cf4 \cb1 And seeing if they are fucked up.\cf0 \
 \
 \
 4/5:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 \cf11 - I think that a unique contribution to this problem would be to utilize concurrent listings, as well as completed listings.\
+\f2 \cf10 - I think that a unique contribution to this problem would be to utilize concurrent listings, as well as completed listings.\
 
 \fs28 	- 
 \fs24 Calculate 
@@ -215,16 +217,17 @@ if bid_history_items:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 \cf12 \cb13 It might be a good idea to consider the price of similar listings 
+\f2 \cf11 \cb12 It might be a good idea to consider the price of similar listings 
 \i at the time of posting
 \i0  a given listing, but that would require lots of extra scraping. \cf4 \cb1 \
-\cf12 \cb14 So instead, we\'92ll just consider the 
+\cf11 \cb13 So instead, we\'92ll just consider the 
 \i start price 
 \i0 of concurrent listings.\cf0 \cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\fs28 \cf11 \
+\fs28 \cf10 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \fs24 \cf0 \
@@ -279,7 +282,10 @@ for listing1 in listings:\
 			# listing2 is a past listing for listing1 \
 			add to data frame with [\'91concurrent\'92]=0\
 \
-3 Method - \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f3\b \cf0 3 Method - THE BEST (most realistic)
+\f1\b0 \
 sort dataframe by startTime DESC\
 for listing1 in listings:\
 	create new dataframe for concurrent and completed listings (no future listings)\
@@ -288,15 +294,17 @@ for listing1 in listings:\
 		if listing2.startTime < listing1.startTime and listing2.endTime > listing1.startTime:\
 			add listing2 to new dataframe with [\'91concurrent\'92]=1\
 		else:\
-			add listing2 to new dataframe with [\'91concurrent\'92]=0
+			add listing2 to new dataframe with [\'91concurrent\'92]=0\
+	calculate median startPrice of listings with [\'91concurrent\'92]==1
 \f2 \
 \
-For EDA on that aspect, you can Vrushank suggested plotting percentage of concurrent time (x-axis) vs. number of listings within that time, although that wouldn\'92t tell you how much the hyper parameter affects the accuracy of the model.
+For EDA on that aspect, Vrushank suggested plotting percentage of concurrent time (x-axis) vs. number of listings within that time, although that wouldn\'92t tell you how much the hyper parameter affects the accuracy of the model.
 \f1 \
 \
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 VECTORIZE
+\f2 \cf0 VECTORIZE
 \f1 \
 	Vectorize new dataframe (BoW, TFIDF, shingles, sPacy) as vdf\
 	Calculate similarity (Jaccard, Cosine), between listing1 and all other listings in vdf\
@@ -312,13 +320,15 @@ For EDA on that aspect, you can Vrushank suggested plotting percentage of concur
 \f1 \
 \
 		\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 \cf9 \cb10 Problem: People can list items as auctions, and update those listings midway through to have BuyItNow available, but this won\'92t show up in a grab from the ebay API. \
+\f2 \cf4 \cb14 Problem: People can list items as auctions, and update those listings midway through to have BuyItNow available, but this won\'92t show up in a grab from the ebay API. \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \cb1 From the documentation:\
 \pard\pardeftab720\sl300\partightenfactor0
 
-\f3\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec15 Auction\
+\f4\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
+Auction\
 Competitive-bid online auction format. Buyers engage in competitive bidding, 
 \b although Buy It Now may be offered as long as no valid bids have been placed
 \b0 .\
@@ -326,14 +336,14 @@ Competitive-bid online auction format. Buyers engage in competitive bidding,
 \i0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 This is happening for certain listings, such as 332172404108. \
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 This is happening for certain listings, such as 332172404108. \
 
 \b It has a listingType of \'91Auction\'92, no \'91startPrice\'92, BuyItNowAvailable=\'91f\'92, and bidCount=1, then that final selling bid was a Buy It Now.
 \b0  \
 This must have happened because the user updated their listing after it was already posted and online for some time. \
 \
 xpath for \'91see original listing\'92 for these pages:\
-\cf17 //span[contains(@class, 'vi-inl-lnk')]//@href\
+\cf10 //span[contains(@class, 'vi-inl-lnk')]//@href\
 \cf0 \
 There are two options here.\
 1. We could go and scrape for the start price, and then make two listings out of each of these listings: 1 would be an \'91Auction\'92 listing that did NOT sell, and had the original start price. And the other would be a \'91AuctionWithBIN\'92 that DID sell. \
@@ -355,13 +365,13 @@ dfm[\'91listingInfo.listingType\'92] = \'91AuctionWithBIN\'92\
 OKAY and this new information:\
 \pard\pardeftab720\sl300\partightenfactor0
 
-\f3\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec15 AuctionWithBIN\
+\f4\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
+AuctionWithBIN\
 Same as Auction format, but Buy It Now is enabled. AuctionWithBIN changes to Auction if a valid bid has been placed on the item.
 \i0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 Which means we have funky information BUT here is what I realized. Because ebay doesn\'92t update \'91Auction\'92 to \'91AuctionWithBIN\'92 for listings where the user updated the listing type midway through\'85\
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 Which means we have funky information BUT here is what I realized. Because ebay doesn\'92t update \'91Auction\'92 to \'91AuctionWithBIN\'92 for listings where the user updated the listing type midway through\'85\
 \
 \'85We need to create our own 
 \b endListingType
@@ -405,7 +415,7 @@ IF an item SOLD, then we care how about the END state (the state of the item whe
 # I believe this is only true for items that stayed as \'91AuctionWithBIN\'92 the entire life of the listing, and if I\'92m right\'85\
 # I\'92m looking for an \'91AuctionWithBIN\'92 that changed to an \'91Auction\'92 because someone put a bid, but then eventually it SOLD as BuyItNow.\
 # I don\'92t that exists because (from documentation): 
-\f3\i On most sites, 
+\f4\i On most sites, 
 \b the Buy It Now option is removed (and this value returns false) once a valid bid is made on the associated item
 \b0  (a valid bid could be a bid above the reserve price). buyItNowAvailable will return "false" if the listing type is anything but "AuctionWithBIN". Please ignore buyItNowAvailable for fixed-price listings.
 \i0 \
@@ -421,61 +431,119 @@ IF an item SOLD, then we care how about the END state (the state of the item whe
 \
 \
 \
-
-\f2 Modeling Goals:\cf11 \
-\cf4 \
-- Different models for different listing types?\cf11 \
-\cf0 \
-- Experiment with different settings for CountVectorizer\
-	- Read up on CountVectorizer settings.\
-	- \
-- Experiment with different settings for Random Forest\
-	- Read up on Random Forest settings.\
-	- Read up on Gradient Boosted trees. \
-\
-- Use XGBoost. \
-\
-- Set up pipeline for using different vectorizer and vectorizer settings, different models, ensembles.\
-
-\f0 \
-\
-
-\f2 Validation:\
-Profitability metric is different for two sold/not sold:\
-- For classified sold items, we calculate the price increase we were able get for n items. \
-- For classified not sold items, we calculate the sale probability increase we were able to get for n items.
-\f0 \
-\
 \
 
 \f2 4/6:\
 Created baseline model. Used the following features:\
 [titles_df, conditions_df, auction_condition_dummies, start_price_series, sold]\
 Baseline accuracy: 
-\f1\fs28 \cf18 \cb16 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec18 0.793\
+\f1\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
+0.793\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 Predicted Accuracy: 
-\f1\fs28 \cf18 \cb16 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec18 0.871\
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 Predicted Accuracy: 
+\f1\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
+0.871\
 
-\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
-Directions to move forward in:\
-1. Create regression model\
-2. Create pipeline for automating feature processing, model creation \
-	- Use different vectorizer, model\
-	- Check which items are causing errors \
-3. Figure out how to see which words in title/condition are causing biggest changes in probability. \
-	- Recommend replacements/deletion for words that decrease probability (NLP problem)\
-4. Feature engineer for median startPrice of similar, concurrent listings\
-	- Feature engineer median startPrice of similar, completed listings\
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
 \
 4/7:\
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 Directions to move forward in:\
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\
+- Used regression model to predict end prices for auction listings (x)\
+\
+- What model is best to use for this kind of regression, where we have NLP involved?	- SVM, \'85?\
+
+\f0 \
+\
+
+\f2 4/9:\
+-\cb17  
+\b Does lowering the start price increase the probability of selling an item?
+\b0 \cb1 To explore this question, we need to compare the start price and sold_state of items that are similar. So we want to compare items that are as similar as possible, with the only difference being the start price. Then we can make a logistic regression model using just startPrice and check the coefficient to see if if there\'92s a significant correlation. So the problem is to find items that are similar to each other. How do we do this? 
+\b Use NLP to vectorize titles, then calculate similarity between items (using title, condition as features), then take one set of similar items, and see if there is a relationship between startPrice and sold_state. \
+
+\b0 Plot Sold (x-axis) vs. Average Start Price \
+\cb18 - Using TF-IDF and cosine similarity, we were able to make this plot using a particular listing (the  \'91Auction\'92 listing having the highest number of listings similar to it - which has an index of 3080), and using a similarity threshold of 0.5, and found the mean startPrice for sold items to be about $45, and for unsold items $125. \cb1 \
+Let\'92s move on to plotting a change startPrice vs Probability of selling.  \
+\
+\cb17 - 
+\b We want to test if changing the startPrice actually causes my model to increase the likelihood of selling
+\b0 .\cb1  So, using my current classifier, I\'92ll take a listing that is very common (has many listings similar to itself), and have the model repeatedly calculate probability of SOLD for a listing, as I increase it\'92s start Price from 0x to 2x. Make a plot of the results. 1\
+\cb18 - I\'92m only able to plot 1 plot at a time, so I can\'92t get an aggregate view.  Based on briefly looking at some of the items, most of them seem to follow the pattern whereby as you increase startPrice, the probability of selling decreases. \cb1 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 \cb11 - Another exciting problem came up. \cf0 \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 - Discovered that there are very few auctions with an endPrice between ~120 to ~180, and I\'92m not sure why this is. \
+	- \cf4 We should collect more \'91Auction\'92 data with a 120 < endprice < 180 to make up for this shortage (x)\cf0 \
+	- use 
+\f4\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
+MinPrice in item filter 
+\f2 with 120 to 180 dollars.  (x)\
+	- then delete duplicates (x)
+\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 We have a huge dearth of items with endPrices around $120 to $180. I explored that and then then found that the create_end_listing_type_and_start_price was creating a lot of endListingType values of \'91Invalid URL\'92, which I was then filtering out, which was also filtering out a lot of endPrices in the range 120-180. I thought this meant that the URLs were actually 
+\i invalid
+\i0 , but then I discovered that these URLs were actually valid (by using manual HTTP requests instead of the python port). So i looked into how I create the endListingType of \'91Invalid URL\'92 and found that the important condition is to have a startPrice of NaN, so basically a lot of items with endPrice in the range 120-180 had NaN startPrices\
+\
+So I had a lot of startPrice of NaN, which is weird because my scraper should have collected a startPrice if there is a valid URL. But my clue was that this weird behavior was only occurring for items with a specific range of endPrices, so that led me to believe that the most likely explanation was that I simply had accidentally skipped scraping some items when I set my url_start_index. So to attempt to scrape the right ones, I changed the scraper to query the database for items starting at the LEAST recent, and because I started scraping at $20 and moved up in price over time, I found out that the $120 items begin at around index 39500 in my database. So I started scraping at 39500, and we get to around $180 at index 54000, and scraping this many should take around 4 hours. \
+\
+Let\'92s see if this works. \cf0 \
 
 \f0 \
 \
 \
 \
+\
+\
+\
+
+\f2 Directions to move Forward in
+\f0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f2 \cf0 1. Auction Regression Model \
+	a. Create model - KNN Regression (x)\
+	b. Explore errors for Auction Regression Model\
+	c. Explore how changing startPrice affects predicted end price (for all probabilities of sold_state==1 > 0.5)\
+2. Auctions Classification Model\
+	a. Create model - Random Forest Classification (x)\
+	a. Explore Errors\
+		i. Use KFold() to compare training error with test error (x)\
+			- I am over-fitting. \
+		ii. \
+\
+3. Create pipeline for automating feature processing, model creation \
+	- Use different vectorizer, model\
+	- Check which items are causing errors \
+4. Figure out how to see which words in title/condition are causing biggest changes in probability. \
+	- Recommend replacements/deletion for words that decrease probability (NLP problem)\
+5. Feature engineer for median startPrice of similar, concurrent listings\
+	- Feature engineer median startPrice of similar, completed listings\cf10 \
+\cf0 \
+- Experiment with different settings for CountVectorizer\
+\
+- Use XGBoost. \
+- Use SVM \
+\
+- Set up pipeline for using different vectorizer and vectorizer settings, different models, ensembles.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0 \cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f2 \cf0 Validation:\
+Profitability metric is different for two sold/not sold:\
+- For classified sold items, we calculate the price increase we were able get for n items. \
+- For classified not sold items, we calculate the sale probability increase we were able to get for n items.
+\f0 \
 }

@@ -44,7 +44,7 @@ class EbaySpider(CrawlSpider):
 		SQL = '''
 		SELECT ci."itemId", ci."viewItemURL"
 		FROM {tablename} as ci
-		ORDER BY ci."timestamp" DESC; 
+		ORDER BY ci."timestamp" ASC; 
 		'''.format(tablename=postgres_table)
 		cur.execute(SQL)
 
