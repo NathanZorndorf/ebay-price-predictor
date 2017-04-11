@@ -495,55 +495,54 @@ MinPrice in item filter
 \
 So I had a lot of startPrice of NaN, which is weird because my scraper should have collected a startPrice if there is a valid URL. But my clue was that this weird behavior was only occurring for items with a specific range of endPrices, so that led me to believe that the most likely explanation was that I simply had accidentally skipped scraping some items when I set my url_start_index. So to attempt to scrape the right ones, I changed the scraper to query the database for items starting at the LEAST recent, and because I started scraping at $20 and moved up in price over time, I found out that the $120 items begin at around index 39500 in my database. So I started scraping at 39500, and we get to around $180 at index 54000, and scraping this many should take around 4 hours. \
 \
-Let\'92s see if this works. \cf0 \
-
-\f0 \
+Let\'92s see if this works. \
+\cb18 Yep, that was the problem. Just needed to scrape every itemId in our database. We\'92re still at a dearth for items with an endPrice > $650, so we need to keep scraping. \cf0 \cb1 \
 \
 \
+4/10:\
+Goals:\
+- Feature Engineer median startPrice of similar, completed listings\
+- Make Pickles \
+\
+Journal:\
+1. Create a pickle out of cleaned auctions DataFrame.\
+2. Create a new notebook for feature engineering the median start price of concurrent listings\
+	- Create a pile of feature engineered auctions data frame\
+	- Import new auctions into old notebook \
 \
 \
-\
-\
-
-\f2 Directions to move Forward in
-\f0 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-
-\f2 \cf0 1. Auction Regression Model \
-	a. Create model - KNN Regression (x)\
-	b. Explore errors for Auction Regression Model\
-	c. Explore how changing startPrice affects predicted end price (for all probabilities of sold_state==1 > 0.5)\
-2. Auctions Classification Model\
-	a. Create model - Random Forest Classification (x)\
-	a. Explore Errors\
-		i. Use KFold() to compare training error with test error (x)\
-			- I am over-fitting. \
-		ii. \
-\
-3. Create pipeline for automating feature processing, model creation \
-	- Use different vectorizer, model\
-	- Check which items are causing errors \
-4. Figure out how to see which words in title/condition are causing biggest changes in probability. \
-	- Recommend replacements/deletion for words that decrease probability (NLP problem)\
-5. Feature engineer for median startPrice of similar, concurrent listings\
-	- Feature engineer median startPrice of similar, completed listings\cf10 \
 \cf0 \
-- Experiment with different settings for CountVectorizer\
 \
-- Use XGBoost. \
-- Use SVM \
 \
-- Set up pipeline for using different vectorizer and vectorizer settings, different models, ensembles.\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\
+Goals:\cf10 \
 
-\f0 \cf0 \
+\b \cf0 Feature Engineering:
+\b0 \
+- median startPrice of similar, completed listings\
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 \cf0 Validation:\
-Profitability metric is different for two sold/not sold:\
-- For classified sold items, we calculate the price increase we were able get for n items. \
-- For classified not sold items, we calculate the sale probability increase we were able to get for n items.
-\f0 \
+\b Model Optimization (to combat over-fitting):\
+
+\b0 - plot a learning curve to figure out how much data I really need until training error & test error converge\
+	- Use this information to downsample (using pandas sample) when grid searching (to make models quicker to train) \
+- grid search vectorizer settings\
+- grid search models \
+- grid search model parameters \
+- optimize classification models for Recall \
+- optimize regression models for mean_absolute_error \
+\
+
+\b Profitability Optimization Metric:
+\b0 \
+- Calculate the average expected price increase we were able to get for all items. \
+	- Use AWS/Dominoe to do this \
+\
+
+\b Identify Listing factors that contribute to changes in probability of selling & predicted end price:
+\b0 \
+- Recommend replacements/deletion for words that decrease probability\
+\
 }
