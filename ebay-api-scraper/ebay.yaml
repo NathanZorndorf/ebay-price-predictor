@@ -1,35 +1,54 @@
 # eBay SDK Defaults
 
-
-
 name: ebay_api_config
+    
 
 # Trading API Sandbox - https://www.x.com/developers/ebay/products/trading-api
 api.sandbox.ebay.com:
     compatibility: 719
-    appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    # appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    # token: AgAAAA**AQAAAA**aAAAAA**yO/RWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkIahDJWBqQ+dj6x9nY+seQ**jaoDAA**AAMAAA**1nvC7MyyoPnKbCiKLRFPOw4kdtLxsj04ZhZz85P15OQgKol4c3uBlaqDvzucVMe427r9T93vTBZVhZFn0vpWP08kYe374UD/VXzwQPAiDFBBbrKKE88idiqhrVSYRl9xcBLGE4wpanWHYoDs3AQ8go17il6XAfFYry+iHJIMEDKo4ikwhIRp7AVmhqt4K0+U1RtJsxjxYxWnH0GLrWuwSFWpu/XnitRibO5OC/o0p9ryf2v7suR2lSUbQ2VSqBXDMJG1I5vcfT+118lzaU3mpVugIU6dG2+k2v+t/IswpTvg9pv/XD1U5usgwWJWQStZG/6kT358OqkhPwJF56HtK31vEDnsL9SQ+p9JY/pIcoQIz1u6XaYlZfersZvwAJLgsF44jzgu+Y8WUUnvCMH9v7tNZ/2zhY/rIuBWrK5GuobpZ2kiu5SYiBBuJeWiBysvsAGWuS9a+VzImG1b+s/jQJGyiuUmjs8aCj5KzDWjSTvbBzWpsHWQaVRCrVqiZiv+mJ7hRqcpXNXUiNIzKBVX9tfEiYnC6gykTl5VMqLBzM26eQt1R5fnyWItbXS5r0+pm1otJi+YdFxm8d+b4174YMmCIBdjv9ceJL7uS/ssNnnVeqk3FptiNFlW9tf+PYt9KfysCi6N7NtRRWH4/oQ6Zpj+4RSFc0XJsTBkey1FNcm4H4zSz7cqmnx4i695nA3HaMDqASKsNIUfzTMjN2BGoTT2xFmHef9VriHDGcwqgCOPSbuWeuuTjbTUr6u0jNFj
+    
+    appid: NathanZo-ebaypric-PRD-4090fc79c-86f1fb32
+    token: AgAAAA**AQAAAA**aAAAAA**nnLyWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkYGoCZWBpwydj6x9nY+seQ**HrMDAA**AAMAAA**3T8/OrOs7miNFtluqR31OFpfd4Y+apVBX9Q00gftP2wHe+gdw1G1c6+cNnWi1v7LZFsTeHfE1tAAhJT5CcHiRr8k2EMLqxB3Hwqj8P27tOnJm9otP4/WvS680f9GR6KDNyVSTTCaGXqqTxSu2Nibb8nx5q9jTeq5DoLlOS24+SG8eyq6rc6nGOuqRFP4ki/bpH3EQMACiZEOQyN5Zuvt8ubk/ogJMKnscRNGnIxI1G+nfdteEaQQO8Lv/nk4nof9fA2S+65m11dCpFpxy/RO+zM3+8a7N49FLC3/j3fH3jxbv2RgDbnJtK3YJUC9Ypa9cc6PyGY8caGhA1G3FNELE9FP4+bCTqHj+SaoOpOAT41yobrLmTan4/YmC5FfVYjG9wfPlzuZkiuL0sV/eeRvTXUcbO6ImUBYeVXpYKwNUPZ30qGC/SDFst1UeXDDVtOY5cqEZmeQOs0V7hVHmIBGpsaNLx/2ItQ8WQQoPn8X8YjEYtGPP3UX8yjqVkao/nPOuIYnWkwl1SaYufsFCVkwxhKGRg1ZZcjAezy2kk9HXym8p7dpV0J367Y+K2qUByDIv6tkihXk6KWYXLcQgtHfJ2wkjpx4ItGusVIQ5Kp2p+LflzBnQ4VWgSn/sLlmf0cP1aWhUt8qvOd+sgxc4oAuD3tRyB3zyQO6Tw8Cp3WEg9/fsdv6csxM/dHkDjk30D859uE3R2HNwP7OPrOdb70h64NFvxGUjE4ib9lch5yR9K1pWjiyeb2dANGMLPeDsPKz
+
+
+    # appid: YunusGen-HelpforN-PRD-b08f655c9-9bfb3bd0
+    appid: TaylorKi-taylorsh-PRD-f0902ebf9-31c2395b
+    
     certid: PRD-bed4d450833b-99a1-4224-9e6e-1e94
     devid: 0cc86638-a322-4390-8da7-76b3800fa795
-    token: AgAAAA**AQAAAA**aAAAAA**yO/RWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkIahDJWBqQ+dj6x9nY+seQ**jaoDAA**AAMAAA**1nvC7MyyoPnKbCiKLRFPOw4kdtLxsj04ZhZz85P15OQgKol4c3uBlaqDvzucVMe427r9T93vTBZVhZFn0vpWP08kYe374UD/VXzwQPAiDFBBbrKKE88idiqhrVSYRl9xcBLGE4wpanWHYoDs3AQ8go17il6XAfFYry+iHJIMEDKo4ikwhIRp7AVmhqt4K0+U1RtJsxjxYxWnH0GLrWuwSFWpu/XnitRibO5OC/o0p9ryf2v7suR2lSUbQ2VSqBXDMJG1I5vcfT+118lzaU3mpVugIU6dG2+k2v+t/IswpTvg9pv/XD1U5usgwWJWQStZG/6kT358OqkhPwJF56HtK31vEDnsL9SQ+p9JY/pIcoQIz1u6XaYlZfersZvwAJLgsF44jzgu+Y8WUUnvCMH9v7tNZ/2zhY/rIuBWrK5GuobpZ2kiu5SYiBBuJeWiBysvsAGWuS9a+VzImG1b+s/jQJGyiuUmjs8aCj5KzDWjSTvbBzWpsHWQaVRCrVqiZiv+mJ7hRqcpXNXUiNIzKBVX9tfEiYnC6gykTl5VMqLBzM26eQt1R5fnyWItbXS5r0+pm1otJi+YdFxm8d+b4174YMmCIBdjv9ceJL7uS/ssNnnVeqk3FptiNFlW9tf+PYt9KfysCi6N7NtRRWH4/oQ6Zpj+4RSFc0XJsTBkey1FNcm4H4zSz7cqmnx4i695nA3HaMDqASKsNIUfzTMjN2BGoTT2xFmHef9VriHDGcwqgCOPSbuWeuuTjbTUr6u0jNFj
+    
 
 # Trading API - https://www.x.com/developers/ebay/products/trading-api
 api.ebay.com:
     version: 719
-    appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    # appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    # token: AgAAAA**AQAAAA**aAAAAA**yO/RWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkIahDJWBqQ+dj6x9nY+seQ**jaoDAA**AAMAAA**1nvC7MyyoPnKbCiKLRFPOw4kdtLxsj04ZhZz85P15OQgKol4c3uBlaqDvzucVMe427r9T93vTBZVhZFn0vpWP08kYe374UD/VXzwQPAiDFBBbrKKE88idiqhrVSYRl9xcBLGE4wpanWHYoDs3AQ8go17il6XAfFYry+iHJIMEDKo4ikwhIRp7AVmhqt4K0+U1RtJsxjxYxWnH0GLrWuwSFWpu/XnitRibO5OC/o0p9ryf2v7suR2lSUbQ2VSqBXDMJG1I5vcfT+118lzaU3mpVugIU6dG2+k2v+t/IswpTvg9pv/XD1U5usgwWJWQStZG/6kT358OqkhPwJF56HtK31vEDnsL9SQ+p9JY/pIcoQIz1u6XaYlZfersZvwAJLgsF44jzgu+Y8WUUnvCMH9v7tNZ/2zhY/rIuBWrK5GuobpZ2kiu5SYiBBuJeWiBysvsAGWuS9a+VzImG1b+s/jQJGyiuUmjs8aCj5KzDWjSTvbBzWpsHWQaVRCrVqiZiv+mJ7hRqcpXNXUiNIzKBVX9tfEiYnC6gykTl5VMqLBzM26eQt1R5fnyWItbXS5r0+pm1otJi+YdFxm8d+b4174YMmCIBdjv9ceJL7uS/ssNnnVeqk3FptiNFlW9tf+PYt9KfysCi6N7NtRRWH4/oQ6Zpj+4RSFc0XJsTBkey1FNcm4H4zSz7cqmnx4i695nA3HaMDqASKsNIUfzTMjN2BGoTT2xFmHef9VriHDGcwqgCOPSbuWeuuTjbTUr6u0jNFj
+    
+    appid: NathanZo-ebaypric-PRD-4090fc79c-86f1fb32
+    token: AgAAAA**AQAAAA**aAAAAA**nnLyWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkYGoCZWBpwydj6x9nY+seQ**HrMDAA**AAMAAA**3T8/OrOs7miNFtluqR31OFpfd4Y+apVBX9Q00gftP2wHe+gdw1G1c6+cNnWi1v7LZFsTeHfE1tAAhJT5CcHiRr8k2EMLqxB3Hwqj8P27tOnJm9otP4/WvS680f9GR6KDNyVSTTCaGXqqTxSu2Nibb8nx5q9jTeq5DoLlOS24+SG8eyq6rc6nGOuqRFP4ki/bpH3EQMACiZEOQyN5Zuvt8ubk/ogJMKnscRNGnIxI1G+nfdteEaQQO8Lv/nk4nof9fA2S+65m11dCpFpxy/RO+zM3+8a7N49FLC3/j3fH3jxbv2RgDbnJtK3YJUC9Ypa9cc6PyGY8caGhA1G3FNELE9FP4+bCTqHj+SaoOpOAT41yobrLmTan4/YmC5FfVYjG9wfPlzuZkiuL0sV/eeRvTXUcbO6ImUBYeVXpYKwNUPZ30qGC/SDFst1UeXDDVtOY5cqEZmeQOs0V7hVHmIBGpsaNLx/2ItQ8WQQoPn8X8YjEYtGPP3UX8yjqVkao/nPOuIYnWkwl1SaYufsFCVkwxhKGRg1ZZcjAezy2kk9HXym8p7dpV0J367Y+K2qUByDIv6tkihXk6KWYXLcQgtHfJ2wkjpx4ItGusVIQ5Kp2p+LflzBnQ4VWgSn/sLlmf0cP1aWhUt8qvOd+sgxc4oAuD3tRyB3zyQO6Tw8Cp3WEg9/fsdv6csxM/dHkDjk30D859uE3R2HNwP7OPrOdb70h64NFvxGUjE4ib9lch5yR9K1pWjiyeb2dANGMLPeDsPKz
+
+    # appid: YunusGen-HelpforN-PRD-b08f655c9-9bfb3bd0
+    # appid: TaylorKi-taylorsh-PRD-f0902ebf9-31c2395b
+    
     certid: PRD-bed4d450833b-99a1-4224-9e6e-1e94
     devid: 0cc86638-a322-4390-8da7-76b3800fa795
-    token: AgAAAA**AQAAAA**aAAAAA**yO/RWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ACkIahDJWBqQ+dj6x9nY+seQ**jaoDAA**AAMAAA**1nvC7MyyoPnKbCiKLRFPOw4kdtLxsj04ZhZz85P15OQgKol4c3uBlaqDvzucVMe427r9T93vTBZVhZFn0vpWP08kYe374UD/VXzwQPAiDFBBbrKKE88idiqhrVSYRl9xcBLGE4wpanWHYoDs3AQ8go17il6XAfFYry+iHJIMEDKo4ikwhIRp7AVmhqt4K0+U1RtJsxjxYxWnH0GLrWuwSFWpu/XnitRibO5OC/o0p9ryf2v7suR2lSUbQ2VSqBXDMJG1I5vcfT+118lzaU3mpVugIU6dG2+k2v+t/IswpTvg9pv/XD1U5usgwWJWQStZG/6kT358OqkhPwJF56HtK31vEDnsL9SQ+p9JY/pIcoQIz1u6XaYlZfersZvwAJLgsF44jzgu+Y8WUUnvCMH9v7tNZ/2zhY/rIuBWrK5GuobpZ2kiu5SYiBBuJeWiBysvsAGWuS9a+VzImG1b+s/jQJGyiuUmjs8aCj5KzDWjSTvbBzWpsHWQaVRCrVqiZiv+mJ7hRqcpXNXUiNIzKBVX9tfEiYnC6gykTl5VMqLBzM26eQt1R5fnyWItbXS5r0+pm1otJi+YdFxm8d+b4174YMmCIBdjv9ceJL7uS/ssNnnVeqk3FptiNFlW9tf+PYt9KfysCi6N7NtRRWH4/oQ6Zpj+4RSFc0XJsTBkey1FNcm4H4zSz7cqmnx4i695nA3HaMDqASKsNIUfzTMjN2BGoTT2xFmHef9VriHDGcwqgCOPSbuWeuuTjbTUr6u0jNFj
+    
 
 # Finding API - https://www.x.com/developers/ebay/products/finding-api
 svcs.ebay.com:
-    appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    # appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    # appid: YunusGen-HelpforN-PRD-b08f655c9-9bfb3bd0
+    # appid: TaylorKi-taylorsh-PRD-f0902ebf9-31c2395b
+    
     version: 1.13.0
 
 # Shopping API - https://www.x.com/developers/ebay/products/shopping-api
 open.api.ebay.com:
-  # appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
-  appid: YunusGen-HelpforN-PRD-b08f655c9-9bfb3bd0
-  # appid: TaylorKi-taylorsh-PRD-f0902ebf9-31c2395b
+    # appid: nathanzo-ebaypric-PRD-cbed4d450-05d217d8
+    # appid: YunusGen-HelpforN-PRD-b08f655c9-9bfb3bd0
+    # appid: TaylorKi-taylorsh-PRD-f0902ebf9-31c2395b
     version: 671
 
     # Optional affiliate tracking

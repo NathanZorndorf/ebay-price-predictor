@@ -30,7 +30,10 @@ def init_options():
     parser = OptionParser(usage=usage)
 
     parser.add_option("-d", "--debug",action="store_true", dest="debug", default=False,help="Enabled debugging [default: %default]")
-    parser.add_option("-y", "--yaml",dest="yaml", default='./ebay.yaml',help="Specifies the name of the YAML defaults file. [default: %default]")
+
+    parser.add_option("-y", "--yaml",dest="yaml", default='/Users/Naekid/Desktop/capstone-DSI-5/ebay-price-predictor/ebay-api-scraper/ebay.yaml',
+        help="Specifies the name of the YAML defaults file. [default: %default]")
+
     parser.add_option("-a", "--appid",dest="appid", default=None,help="Specifies the eBay application id to use.")
 
     (opts, args) = parser.parse_args()
@@ -72,7 +75,6 @@ def run(opts, pagesToQuery=1, entriesPerPage=1, pageStart=1):
 
             api_request = {
                 # 'keywords': 'camera',
-                'categoryId'  :  '15230', # 15230 : Film cameras     
                 'categoryId'  :  '31388', # 31388 : Digital cameras     
                 'itemFilter': [
                     {'name': 'LocatedIn', 'value': 'US'},

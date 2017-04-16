@@ -79,6 +79,9 @@ ALTER TABLE completed_items ADD COLUMN id SERIAL;
 #--- Drop a column
 ALTER TABLE tablename DROP COLUMN colname;
 
+#--- Rename a column
+ALTER TABLE distributors RENAME COLUMN address TO city;
+
 #--- Insert data into a table 
 INSERT INTO tablename (col1, col2) VALUES (val1, val2);
 INSERT INTO tablename 

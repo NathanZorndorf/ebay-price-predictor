@@ -1,17 +1,18 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\froman\fcharset0 Palatino-Roman;
-\f3\fmodern\fcharset0 Courier-Bold;\f4\fswiss\fcharset0 ArialMT;}
+\f3\fmodern\fcharset0 Courier-Bold;\f4\fswiss\fcharset0 ArialMT;\f5\fnil\fcharset0 HelveticaNeue;
+}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red85\green142\blue40;\red0\green0\blue0;
-\red85\green142\blue40;\red255\green83\blue8;\red133\green0\blue175;\red174\green0\blue240;\red255\green255\blue255;
-\red255\green39\blue18;\red63\green105\blue30;\red255\green255\blue51;\red179\green179\blue179;\red128\green128\blue128;
-\red255\green250\blue131;\red38\green38\blue38;\red255\green255\blue255;\red194\green229\blue166;\red192\green237\blue254;
-\red0\green0\blue0;\red255\green255\blue255;}
+\red255\green83\blue8;\red133\green0\blue175;\red174\green0\blue240;\red255\green255\blue255;\red255\green39\blue18;
+\red63\green105\blue30;\red255\green255\blue51;\red179\green179\blue179;\red128\green128\blue128;\red255\green250\blue131;
+\red38\green38\blue38;\red255\green255\blue255;\red194\green229\blue166;\red192\green237\blue254;\red255\green252\blue171;
+}
 {\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgenericrgb\c33333\c55686\c15686;\csgenericrgb\c0\c0\c0;
-\csgenericrgb\c33333\c55686\c15686;\csgenericrgb\c100000\c32549\c3137;\csgenericrgb\c52157\c0\c68627;\csgenericrgb\c68235\c0\c94118;\csgenericrgb\c100000\c100000\c100000;
-\csgenericrgb\c100000\c15294\c7059;\csgenericrgb\c24706\c41176\c11765;\csgenericrgb\c100000\c100000\c20000;\csgray\c75407;\csgray\c57415;
-\csgenericrgb\c100000\c98039\c51373;\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;\csgenericrgb\c76078\c89804\c65098;\csgenericrgb\c75294\c92941\c99608;
-\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;}
-\margl1440\margr1440\vieww18700\viewh18740\viewkind0
+\csgenericrgb\c100000\c32549\c3137;\csgenericrgb\c52157\c0\c68627;\csgenericrgb\c68235\c0\c94118;\csgenericrgb\c100000\c100000\c100000;\csgenericrgb\c100000\c15294\c7059;
+\csgenericrgb\c24706\c41176\c11765;\csgenericrgb\c100000\c100000\c20000;\csgray\c75407;\csgray\c57415;\csgenericrgb\c100000\c98039\c51373;
+\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;\csgenericrgb\c76078\c89804\c65098;\csgenericrgb\c75294\c92941\c99608;\csgenericrgb\c100000\c98824\c67059;
+}
+\margl1440\margr1440\vieww18700\viewh8760\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 eBay Capstone Work Journal:\
@@ -37,6 +38,7 @@ Goal:\
 in \
 /Users/Naekid/Desktop/capstone-DSI-5/ebay-price-predictor/ebay-api-scraper/ebay_scraper/ebay_scraper \
 rub scrapy\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1 \cf3 $ scrapy crawl ebay_crawl_spider -a url_start_index=92224\
 \
@@ -64,15 +66,15 @@ $ psql - U nathan ebay
 - Pull postgres data into pandas data frame using sqlalchemy (x)\
 	- Deleted duplicates in completed_items table (x)\
 	
-\f1 \cf5 DELETE FROM tablename\
+\f1 \cf3 DELETE FROM tablename\
 	WHERE id IN \
 		(SELECT id FROM (SELECT id, ROW_NUMBER() OVER (partition BY column1, column2, column3 ORDER BY id) AS rnum FROM tablename) \
 		as t WHERE t.rnum > 1);\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf4 or specifically for deleting duplicate itemId :\cf5 \
+\cf4 or specifically for deleting duplicate itemId :\cf3 \
 \
-DELETE FROM completed_items_v2 WHERE id IN (SELECT id FROM (SELECT ci."id", ROW_NUMBER() OVER (partition BY ci."itemId" ORDER BY ci."id") AS rnum FROM completed_items_v2 as ci) as t WHERE t.rnum > 1);\cf6 \
+DELETE FROM completed_items_v2 WHERE id IN (SELECT id FROM (SELECT ci."id", ROW_NUMBER() OVER (partition BY ci."itemId" ORDER BY ci."id") AS rnum FROM completed_items_v2 as ci) as t WHERE t.rnum > 1);\cf5 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0 \cf0 \
@@ -100,7 +102,7 @@ Therefore I was getting completed items from every ebay category (only filter I 
 		- categoryId = 31388 # digital cameras \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f1 \cf0 		\cf5 DELETE FROM completed_items_15230_31388 as ci WHERE ci."primaryCategory.categoryId"!=31388 AND ci."primaryCategory.categoryId"!=15230;
+\f1 \cf0 		\cf3 DELETE FROM completed_items_15230_31388 as ci WHERE ci."primaryCategory.categoryId"!=31388 AND ci."primaryCategory.categoryId"!=15230;
 \f0 \cf0 \
 	- OK that didn\'92t work. When we copy completed_items, a serial (id_seq table) was not created. Therefore, in our completed_items_15230_31388 table, the id column was not a serial, and was not being automatically generated when we inserted values. \
 		- I copied old table to new table. Then I created a new serial primary key column. Then I deleted the old id column. Then I deleted duplicate rows (rows with duplicate itemId values). \
@@ -124,7 +126,7 @@ Goals for 3/31 and weekend:\
 - Using cactusVPN, I was able to start scraping again. \
 	- VPN disconnects if I send too many requests too fast. Using these settings, it seems to work:\
 		
-\f1 \cf7 AUTOTHROTTLE_START_DELAY = 0.5\
+\f1 \cf6 AUTOTHROTTLE_START_DELAY = 0.5\
 		AUTOTHROTTLE_MAX_DELAY = 2\
 		AUTOTHROTTLE_TARGET_CONCURRENCY = 2\
 		CONCURRENT_REQUESTS = 2\
@@ -146,12 +148,12 @@ Also, I don\'92t see anyone doing this in the white papers that have been releas
 \
 Goals for 4/1 and 4/2:\
 - Scrape more data. Current number of rows in 
-\f1 \cf8 completed_items_15230_31388 is 46225. 
+\f1 \cf7 completed_items_15230_31388 is 46225. 
 \f0 \cf0 \
 	- Collect completed_items auctions for starting at 3/30 at 11:10:00, until 4/2 12:00:00 (x)\
 	- collect buy it now auctions of prices from 20 to 2500 and store in table completed_items_15230_31388 (x) \
 		- 
-\f1 \cf8 \{'name': 'ListingType', 'value':'AuctionWithBIN'\},
+\f1 \cf7 \{'name': 'ListingType', 'value':'AuctionWithBIN'\},
 \f0 \cf0 \
 	- Collect fixedPrice auctions of prices from 20 to 2500 and store in table completed_items_15230_31388 \
 - Don\'92t know if \'91FixedPrice\'92 listings were sold or if they just ended. \
@@ -169,6 +171,7 @@ and then running the samples in:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0 \cf0 For some reason, the samples in .egg use the code in the other ebaysdk/ directory. Who knows. \
+\
 I created a GitHub ticket on the python SDK page. I also created a ebay developers forum post. \
 Here\'92s a sample URI HTTP GET with the correct sellingState:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
@@ -180,7 +183,9 @@ I\'92ve decided that the best course of action is to move on to sending my own H
 - Discovered bug that was causing incorrect sellingState to be returned. The problem was that the the 
 \f1 X-EBAY-SOA-SERVICE-VERSION 
 \f0 Header field in the ebaySDK was set to 1.0.0. When I hardcoded it to 1.13.0, that fixed the problem. Also, you should be able to change the version in the ebay.yaml file, but that didn\'92t work for me.\
+\
 - Wrote my own wrapper for Ebay API to send findCompletedItems requests to specific itemId, retreive sellingState, and update SQL table. \
+\
 - scrape ebay for condition information of FixedPrice items. \
 \
 - my-ebay-api-port/development.ipynb is for using HTTP GET ebay API to update sellingState for items that are already in my ebay database. \
@@ -201,7 +206,7 @@ I\'92ve decided that the best course of action is to move on to sending my own H
 Slightly different - I don\'92t know how I\'92m getting these two. But it\'92s not a big deal. We can just grab the entire HTML of either page, and use this code to get the startPrice:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f1 \cf5 bid_history_items = response.xpath("//span/text()").extract()\
+\f1 \cf3 bid_history_items = response.xpath("//span/text()").extract()\
 if bid_history_items:\
 	for i,text in enumerate(bid_history_items):\
 		if text == 'Starting Price':\
@@ -214,14 +219,14 @@ if bid_history_items:\
 \
 - I also found out that sometimes if a listing is an auction but ends with a BuyItNow, the findCompletedItems does not always show that it was a \'91AuctionWithBIN\'92 or that it ended with a BuyItNow. It\'92s also going to require two nested scrapes to get the start price. \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf9 \cb10 I will have to investigate this further, but looking into listings of type \'91AuctionWithBIN\'92\
+\cf8 \cb9 I will have to investigate this further, but looking into listings of type \'91AuctionWithBIN\'92\
 \cf4 \cb1 And seeing if they are fucked up.\cf0 \
 \
 \
 4/5:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 \cf11 - I think that a unique contribution to this problem would be to utilize concurrent listings, as well as completed listings.\
+\f2 \cf10 - I think that a unique contribution to this problem would be to utilize concurrent listings, as well as completed listings.\
 
 \fs28 	- 
 \fs24 Calculate 
@@ -233,15 +238,15 @@ if bid_history_items:\
 \f0 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 \cf12 \cb13 It might be a good idea to consider the price of similar listings 
+\f2 \cf11 \cb12 It might be a good idea to consider the price of similar listings 
 \i at the time of posting
 \i0  a given listing, but that would require lots of extra scraping. \cf4 \cb1 \
-\cf12 \cb14 So instead, we\'92ll just consider the 
+\cf11 \cb13 So instead, we\'92ll just consider the 
 \i start price 
 \i0 of concurrent listings.\cf0 \cb1 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\fs28 \cf11 \
+\fs28 \cf10 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \fs24 \cf0 \
@@ -336,12 +341,12 @@ For EDA on that aspect, Vrushank suggested plotting percentage of concurrent tim
 		\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 \cf4 \cb15 Problem: People can list items as auctions, and update those listings midway through to have BuyItNow available, but this won\'92t show up in a grab from the ebay API. \
+\f2 \cf4 \cb14 Problem: People can list items as auctions, and update those listings midway through to have BuyItNow available, but this won\'92t show up in a grab from the ebay API. \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \cb1 From the documentation:\
 \pard\pardeftab720\sl300\partightenfactor0
 
-\f4\i\fs26 \cf16 \cb17 \expnd0\expndtw0\kerning0
+\f4\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
 Auction\
 Competitive-bid online auction format. Buyers engage in competitive bidding, 
 \b although Buy It Now may be offered as long as no valid bids have been placed
@@ -351,13 +356,16 @@ Competitive-bid online auction format. Buyers engage in competitive bidding,
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 This is happening for certain listings, such as 332172404108. \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\b It has a listingType of \'91Auction\'92, no \'91startPrice\'92, BuyItNowAvailable=\'91f\'92, and bidCount=1, then that final selling bid was a Buy It Now.
+\b \cf0 It has a listingType of \'91Auction\'92, no \'91startPrice\'92, BuyItNowAvailable=\'91f\'92, and bidCount=1, then that final selling bid was a Buy It Now.
 \b0  \
 This must have happened because the user updated their listing after it was already posted and online for some time. \
 \
 xpath for \'91see original listing\'92 for these pages:\
-\cf11 //span[contains(@class, 'vi-inl-lnk')]//@href\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf10 //span[contains(@class, 'vi-inl-lnk')]//@href\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf0 \
 There are two options here.\
 1. We could go and scrape for the start price, and then make two listings out of each of these listings: 1 would be an \'91Auction\'92 listing that did NOT sell, and had the original start price. And the other would be a \'91AuctionWithBIN\'92 that DID sell. \
@@ -379,7 +387,7 @@ dfm[\'91listingInfo.listingType\'92] = \'91AuctionWithBIN\'92\
 OKAY and this new information:\
 \pard\pardeftab720\sl300\partightenfactor0
 
-\f4\i\fs26 \cf16 \cb17 \expnd0\expndtw0\kerning0
+\f4\i\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
 AuctionWithBIN\
 Same as Auction format, but Buy It Now is enabled. AuctionWithBIN changes to Auction if a valid bid has been placed on the item.
 \i0 \
@@ -451,66 +459,66 @@ IF an item SOLD, then we care how about the END state (the state of the item whe
 Created baseline model. Used the following features:\
 [titles_df, conditions_df, auction_condition_dummies, start_price_series, sold]\
 Baseline accuracy: 
-\f1\fs28 \cf2 \cb17 \expnd0\expndtw0\kerning0
+\f1\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
 0.793\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 Predicted Accuracy: 
-\f1\fs28 \cf2 \cb17 \expnd0\expndtw0\kerning0
+\f1\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
 0.871\
 
 \f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
 \
 4/7:\
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 Directions to move forward in:\
+Directions to move forward in:\
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 \
+\
 \
 - Used regression model to predict end prices for auction listings (x)\
 \
 - What model is best to use for this kind of regression, where we have NLP involved?	- SVM, \'85?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0 \
+\f0 \cf0 \
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2 4/9:\
--\cb18  
+\f2 \cf0 4/9:\
+-\cb17  
 \b Does lowering the start price increase the probability of selling an item?
 \b0 \cb1 To explore this question, we need to compare the start price and sold_state of items that are similar. So we want to compare items that are as similar as possible, with the only difference being the start price. Then we can make a logistic regression model using just startPrice and check the coefficient to see if if there\'92s a significant correlation. So the problem is to find items that are similar to each other. How do we do this? 
 \b Use NLP to vectorize titles, then calculate similarity between items (using title, condition as features), then take one set of similar items, and see if there is a relationship between startPrice and sold_state. \
 
 \b0 Plot Sold (x-axis) vs. Average Start Price \
-\cb19 - Using TF-IDF and cosine similarity, we were able to make this plot using a particular listing (the  \'91Auction\'92 listing having the highest number of listings similar to it - which has an index of 3080), and using a similarity threshold of 0.5, and found the mean startPrice for sold items to be about $45, and for unsold items $125. \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \cb18 - Using TF-IDF and cosine similarity, we were able to make this plot using a particular listing (the  \'91Auction\'92 listing having the highest number of listings similar to it - which has an index of 3080), and using a similarity threshold of 0.5, and found the mean startPrice for sold items to be about $45, and for unsold items $125. \cb1 \
 Let\'92s move on to plotting a change startPrice vs Probability of selling.  \
 \
-\cb18 - 
+\cb17 - 
 \b We want to test if changing the startPrice actually causes my model to increase the likelihood of selling
 \b0 .\cb1  So, using my current classifier, I\'92ll take a listing that is very common (has many listings similar to itself), and have the model repeatedly calculate probability of SOLD for a listing, as I increase it\'92s start Price from 0x to 2x. Make a plot of the results. 1\
-\cb19 - I\'92m only able to plot 1 plot at a time, so I can\'92t get an aggregate view.  Based on briefly looking at some of the items, most of them seem to follow the pattern whereby as you increase startPrice, the probability of selling decreases. \cb1 \
+\cb18 - I\'92m only able to plot 1 plot at a time, so I can\'92t get an aggregate view.  Based on briefly looking at some of the items, most of them seem to follow the pattern whereby as you increase startPrice, the probability of selling decreases. \cb1 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf4 \cb12 - Another exciting problem came up. \cf0 \cb1 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf0 - Discovered that there are very few auctions with an endPrice between ~120 to ~180, and I\'92m not sure why this is. \
+\cf4 \cb11 - Another exciting problem came up. \cf0 \cb1 \
+- Discovered that there are very few auctions with an endPrice between ~120 to ~180, and I\'92m not sure why this is. \
 	- \cf4 We should collect more \'91Auction\'92 data with a 120 < endprice < 180 to make up for this shortage (x)\cf0 \
 	- use 
-\f4\fs26 \cf16 \cb17 \expnd0\expndtw0\kerning0
+\f4\fs26 \cf15 \cb16 \expnd0\expndtw0\kerning0
 MinPrice in item filter 
 \f2 with 120 to 180 dollars.  (x)\
 	- then delete duplicates (x)
 \fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf4 We have a huge dearth of items with endPrices around $120 to $180. I explored that and then then found that the create_end_listing_type_and_start_price was creating a lot of endListingType values of \'91Invalid URL\'92, which I was then filtering out, which was also filtering out a lot of endPrices in the range 120-180. I thought this meant that the URLs were actually 
-\i invalid
-\i0 , but then I discovered that these URLs were actually valid (by using manual HTTP requests instead of the python port). So i looked into how I create the endListingType of \'91Invalid URL\'92 and found that the important condition is to have a startPrice of NaN, so basically a lot of items with endPrice in the range 120-180 had NaN startPrices\
+\i \cf4 invalid
+\i0 \cf4 , but then I discovered that these URLs were actually valid (by using manual HTTP requests instead of the python port). So i looked into how I create the endListingType of \'91Invalid URL\'92 and found that the important condition is to have a startPrice of NaN, so basically a lot of items with endPrice in the range 120-180 had NaN startPrices\
 \
 So I had a lot of startPrice of NaN, which is weird because my scraper should have collected a startPrice if there is a valid URL. But my clue was that this weird behavior was only occurring for items with a specific range of endPrices, so that led me to believe that the most likely explanation was that I simply had accidentally skipped scraping some items when I set my url_start_index. So to attempt to scrape the right ones, I changed the scraper to query the database for items starting at the LEAST recent, and because I started scraping at $20 and moved up in price over time, I found out that the $120 items begin at around index 39500 in my database. So I started scraping at 39500, and we get to around $180 at index 54000, and scraping this many should take around 4 hours. \
 \
 Let\'92s see if this works. \
-\cb19 Yep, that was the problem. Just needed to scrape every itemId in our database. We\'92re still at a dearth for items with an endPrice > $650, so we need to keep scraping. \cf0 \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 \cb18 Yep, that was the problem. Just needed to scrape every itemId in our database. We\'92re still at a dearth for items with an endPrice > $650, so we need to keep scraping. \cf0 \cb1 \
 \
 \
 4/10:\
@@ -556,8 +564,8 @@ Journal:\
 		- $ bash Anaconda2-4.3.1-Linux-x86_64.sh  n\
 		- Closed SSH opened new SSH\
 		- Transfer files to instance \
-		- ssh -i "ebay-price-predictor-2.pem" -L 8000:localhost:8888 ec2-user@ec2-34-201-20-46.compute-1.amazonaws.com\
-	\
+		- ssh -i "ebay-price-predictor-3.pem" -L 8000:localhost:8888 ec2-user@ec2-54-183-29-45.us-west-1.compute.amazonaws.com\
+\
 - (on ec2) Grid Search RandomForestClassifier (X)\
 	- run a process in background: nohup python classification-grid-search.py &\
 	- $ top -> k -> (PID_#) -> 15\
@@ -595,8 +603,8 @@ Question to ask vrushank:\
 Presentation:\
 \pard\pardeftab720\sl320\partightenfactor0
 
-\f1\fs28 \cf20 \cb21 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec20 Baseline Accuracy: 0.857667278492\
+\f1\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
+Baseline Accuracy: 0.857667278492\
 Baseline RFC accuracy: 0.89738027699\
 \
 baseline mean_absolute_error: 66.7116406965 \
@@ -604,30 +612,33 @@ predicted mean_absolute_error: 27.0460162035\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
 \pard\pardeftab720\sl320\partightenfactor0
 
-\f1\fs28 \cf20 \cb21 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec20 Optimal Predicted End Price:$618.714156395, Optimal Start Price:$590.0, Chance of Selling:0.87, Expected Profit:$538.281316064\
-
-\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\f1\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
+Optimal Predicted End Price:$618.714156395, Optimal Start Price:$590.0, Chance of Selling:0.87, Expected Profit:$538.281316064\
 \pard\pardeftab720\sl320\partightenfactor0
 
-\f1\fs28 \cf2 \cb17 \expnd0\expndtw0\kerning0
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\pardeftab720\sl320\partightenfactor0
+
+\f1\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
 Average End Price: $262.72
 \f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f1\fs28 \cf0 Average Lift: $34.20\
 % Average Lift: 13% Increased Profit on Average!\
-on 20,000 Auction Listings: $\cf20 \cb21 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec20 6,719,374.15 Net Increased Profit\
-\cf0 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+on 20,000 Auction Listings: $\cf2 \cb16 \expnd0\expndtw0\kerning0
+6,719,374.15 Net Increased Profit\
+\cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2\fs24 \
+\f2\fs24 \cf0 \
 \
 \
-Goals:\cf11 \
+Goals:\cf10 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \b \cf0 Feature Engineering:
 \b0 \
@@ -641,8 +652,9 @@ Goals:\cf11 \
 \
 
 \b Model Optimization (to combat over-fitting):\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\b0 - plot a learning curve to figure out how much data I really need until training error & test error converge\
+\b0 \cf0 - plot a learning curve to figure out how much data I really need until training error & test error converge\
 	- Use this information to downsample (using pandas sample) when grid searching (to make models quicker to train) \
 - grid search vectorizer settings\
 - grid search models \
@@ -650,8 +662,9 @@ Goals:\cf11 \
 - optimize classification models for Recall \
 - optimize regression models for mean_absolute_error \
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\b Profitability Optimization Metric:
+\b \cf0 Profitability Optimization Metric:
 \b0 \
 - Calculate the average expected price increase we were able to get for all items. \
 	- Use AWS/Dominoe to do this \
@@ -664,6 +677,91 @@ Goals:\cf11 \
 
 \b Using Images + NN To Predict Sale
 \b0 \
-- \
+\
+\
+4/14:\
+- Extract Listing Features - Model, Lens, MegaPixels\
+	- we can use the getItem Call in the Trading API to get category specific information (like Model, MegaPixels)\
+	- We used getCategorySpecifics Call in the Trading API to get the \'93Item Specifics\'94 for the Digital Camera (#31388) category. They are:\
+Type\
+Brand\
+MPN\
+Series\
+Model\
+Megapixels\
+Optical Zoom\
+Features\
+Color\
+Bundled Items\
+Connectivity\
+Battery Type\
+Manufacturer Warranty\
+Screen Size\
+Digital Zoom\
+Country/Region of Manufacture\
+\
+4/15:\
+\
+3 ways to extract Brand, Model information:\
+1. Use ebay API. Problematic because we only get a certain number of calls per day.\
+2. Scrapy. Long development + takes many hours. \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \cb17 3. Extract Brand,Model from title using Brand,Model information already in category_specific table. Fastest. \cb1 \
+\
+\
+I think the most important features for each listings are:\
+Brand - \cb17 Extract Brand,Model from title using Brand,Model information already in category_specific table. Fastest. \cb1 \
+Model - \cb17 Extract Brand,Model from title using Brand,Model information already in category_specific table. Fastest. \cb1 \
+Lens Type - \cb17 Extract Lens Type from title using string matching (\'93Body\'94=0, \\d-\\d=1, \'93Len\'94=1, \'93mm\'94=1. \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 Condition - Already have (x)\
+Seller Feedback - Already have (x)\
+Free Shipping - Already have (x)\
+Bundled Items / Extas - \cb14 Will need to use scrapy or several days of ebay API. Not likely to happen. \cb1 \
+Original Packaging - \cb19 Would need to use scrapy. Not likely to happen\cb1 \
+\
+Features to Engineer with these features:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\b \cf0 - Median listing price of FixedPrice listings of same Brand,Model, Condition for Classification.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 - Median end price of Auctions,FixedPrice listings of same Brand,Model, Condition for Regression.
+\b0 \
+\
+\
+Get a list of brands/models with:\
+select DISTINCT "Brand" from category_specifics;\
+select DISTINCT "Model" from category_specifics;\
+\
+4/16:\
+Model Extraction worked really well!!!\
+First I extract obvious models with regex (for example 
+\f5\fs28 \cf2 \cb16 \expnd0\expndtw0\kerning0
+dsc-wx300
+\f2 ).
+\fs24  Then i use TF-IDF vectorization + cosine similarity to match a filtered version of the title with the list of models pulled using ebay API. From a spot check, it\'92s working really well! More issues with the regex extraction than with TF-IDF actually, so we\'92re going to try to use TF-IDF the whole way. 
+\b Actually just did a test - Regex is messing things up, so let\'92s just use TF-IDF + Cosine Similarity to extract model name on all listings. 
+\b0 \
+\
+We also need to make more API calls with getItem so that we have a bigger camera Model list. Right now we only have like 1000 distinct models. Which, with my spot check, has been fine, but we can use some of my 5000 limit to potentially get more models. We could also use the API to get Bundled Items. However I think I want to focus on just auctions at this point. \
+So I need to 
+\b create a table called 
+\f3 category_specifics_auctions
+\f2\b0 :\
+1. Copy itemId from completed_items_v2 where listingType != \'91FixedPrice\'92 and listingType != \'91StoreInventory\'92 into table called category_specifics_auctions\
+2. Update category_specifics_auctions using rows from category_specifics that have non-empty Brands.\
+TOO TIME-INTENSIVE!\
+We\'92re just going to use category_specifics to get a list of brands and models. \
+We will need to use scrapy if we want to get Bundled Items.
+\f1\fs28 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\
+\
+\
+\
+\
+\
 \
 }
