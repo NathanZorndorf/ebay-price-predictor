@@ -752,11 +752,52 @@ So I need to
 2. Update category_specifics_auctions using rows from category_specifics that have non-empty Brands.\
 TOO TIME-INTENSIVE!\
 We\'92re just going to use category_specifics to get a list of brands and models. \
-We will need to use scrapy if we want to get Bundled Items.
-\f1\fs28 \
+We will need to use scrapy if we want to get Bundled Items.\
+\
+Lens extraction with regex went fine, but I realized that the 18-55mm text is only PART of the lens description. There 
+\f1\fs28 is more to the lens than the 15-55mm
+\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\
+Okay so Model Extraction did NOT work really well. I don\'92t know why I thought it worked well earlier. \
+I still need to extract brand, model information from title. But I need a CLEAN LIST of models to compare with the listing title. So In order to get a clean list, I\'92ll scrape B&H Video for all their cameras, and store that information into a table in my database called b_h_camera_inventory\
+Create table:\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f2\fs24 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\f1 \cf0 CREATE TABLE b_h_digital_camera_inventory (\
+	"id" 				SERIAL PRIMARY KEY,\
+	"Brand" 			TEXT,\
+	"Model" 			TEXT,\
+	"Retail Price" 		DECIMAL,\
+	"Body Only" 		BOOLEAN,\
+	"Kit"				BOOLEAN,\
+	"Has Lens" 			BOOLEAN,\
+	"Lens"				TEXT,\
+	"B&H Id" 			TEXT\
+)
+\f2 ;\
+\
+# -*- coding: utf-8 -*-\
+\
+# Define here the models for your scraped items\
+#\
+# See documentation in:\
+# http://doc.scrapy.org/en/latest/topics/items.html\
+\
+import scrapy\
+\
+\
+class CameraRetailerScraperItem(scrapy.Item):\
+    # define the fields for your item here like:\
+    # name = scrapy.Field()\
+    brand = scrapy.Field(default='NULL')\
+    model = scrapy.Field(default='NULL')\
+    retailPrice = scrapy.Field(default='NULL')\
+    bodyOnly = scrapy.Field(default='NULL')\
+    kit = scrapy.Field(default='NULL')\
+    hasLens = scrapy.Field(default='NULL')\
+    lens = scrapy.Field(default='NULL')\
+    bhId = scrapy.Field(default='NULL')\
+\
 \
 \
 \
