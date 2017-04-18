@@ -69,9 +69,9 @@ class BhPhotoDigitalCameraPipeline(object):
 
 		insert_statement = '''INSERT INTO {table_name} (%s) VALUES %s;'''.format(table_name=self.postgres_table)
 
-		keys = ['Brand','Title','Retail Price','B&H Id']
+		keys = ['Brand','Title']
 		keys = ['"{}"'.format(key) for key in keys] 
-		values = (item['brand'],item['title'],item['retail_price'],item['bh_id'])	
+		values = (item['brand'],item['title'])	
 
 		SQL = self.cur.mogrify(insert_statement, (psycopg2.extensions.AsIs(','.join(keys)), values))
 
