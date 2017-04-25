@@ -1,51 +1,18 @@
-# ebay-price-predictor
-My capstone for GA DSI 5. Predicts whether a given ebay listing will sell or not, and, if it will sell, and how much it will sell for.
+# Ebay Listing Optimizer through Machine Learning
 
-Feature : dataType : data : description : outputSelector
+If you've ever bought something on Ebay, you know that it can be difficult to know if a particular listing is a good deal or not. And if you're selling, it can be hard to determine which options will draw bidders to your auction. What if there was a way to increase the likelihood that you would sell your listing on ebay, just by swapping a few keywords in your title? What if there was a way to filter listings for only the best deals?
 
-DateTime EBay processed request : dateTime 	: timestamp
-Item Title 						: string 	: searchResult.item.title
-subtitle of listing 			: string 	: searchResult.item.subtitle
-Item URL 						: URI 		: searchResult.item.viewItemURL
+To investiage these questions, I dug into actual ebay data and built a machine learning system to help sellers make more sales on ebay, and alert shoppers to the best deals so they can make smarter buying decisions and save money.
 
-Category Id 					:  string 	: searchResult.item.primaryCategory.categoryId
-Category Name					:  string  	: searchResult.item.primaryCategory.categoryName
-Secondary Category Id			:  string 	: searchResult.item.secondaryCategory.categoryId
-Secondary Category Name 		:  string  	: searchResult.item.secondaryCategory.categoryName
+In this report, I'll discuss the decisions I made and show revelant code blocks and visualizations that describe my modeling process. 
 
-Quantity 						: double 	: searchResult.item.unitPrice.quantity
-Size, Weight, Volume, Count 	: string 	: searchResult.item.unitPrice.type
+I'll go over:
 
-listing type 					: token 	: searchResult.item.listingInfo.listingType : string : format type of the listing, such as online auction, fixed price, or advertisement. 
-conditionDisplayName 			: string  	: searchResult.item.condition.conditionDisplayName
-conditionId 					: int 		: searchResult.item.condition.conditionId
+1. Web Scraping, Data Cleaning and Data Piping into Postgres
+2. Data Pre-Processing 
+3. Data Visualization
+4. Feature Engineering
+5. Modeling & Model Validation 
+7. Application 
 
-
-best offer enabled 				: boolean 	: searchResult.item.listingInfo.bestOfferEnabled
-BuyItNow Available 				: boolean 	: searchResult.item.listingInfo.buyItNowAvailable
-BuyItNow Price 					: double  	: searchResult.item.listingInfo.buyItNowPrice
-autoPay 						: boolean 	: searchResult.item.autoPay
-Payment Method 					: token 	: searchResult.item.paymentMethod
-
-End Time 						: dateTime 	: searchResult.item.listingInfo.endTime
-Start Time 						: dateTime 	: searchResult.item.listingInfo.startTime
-Location 						: string 	: searchResult.item.location
-Postal Code 					: string 	: searchResult.item.postalCode
-country 						: token 	: searchResult.item.country
-
-Shipping Cost 					: double 	: searchResult.item.shippingInfo.shippingServiceCost
-Shipping Type 					: token 	: searchResult.item.shippingInfo.shippingType
-
-name of seller's ebay store 	: string 	: searchResult.item.storeInfo.storeName
-Seller Info 					: token 	: searchResult.item.sellerInfo.feedbackRatingStar : : SellerInfo
-Seller Feedback score 			: long 		: searchResult.item.sellerInfo.feedbackScore
-Positive Feedback Percent 		: double 	: searchResult.item.sellerInfo.positiveFeedbackPercent
-Seller User Name 				: string 	: searchResult.item.sellerInfo.sellerUserName
-Top Rated Seller 				: boolean 	: searchResult.item.sellerInfo.topRatedSeller
-Top Rated Listing 				: Boolean 	: searchResult.item.topRatedListing
-
-URL for Gallery Thumbnail Image : URI 		: searchResult.item.galleryURL 
-Large Picture URL 				: URI (string) :  searchResult.item.pictureURLLarge
- 
-
-
+# 1. Web Scraping, Data Cleaning, Data Piping
