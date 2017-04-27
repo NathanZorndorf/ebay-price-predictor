@@ -8,7 +8,7 @@ To investiage these questions, I dug into actual ebay data and built a machine l
 In this report, I'll discuss the decisions I made and show revelant code blocks and visualizations that describe my modeling process. 
 
 # 1. Web Scraping, Data Cleaning, Data Piping
-Using the Ebay API and a related Python wrapper [https://github.com/timotheus/ebaysdk-python], I collected data for 100,000 completed listings in the "Digital Camera" category for the past 3 months, and stored the data in a table within a postgres database.
+Using the Ebay API and a related Python wrapper [https://github.com/timotheus/ebaysdk-python], I collected data for 100,000 completed listings in the "Digital Camera" category for the past 3 months, and stored the data in a table within a postgres database. I ended up using  20,000 "Auction" type listings within the original dataset.
 ![Sample of rows for a listing in Postgres database](.capstone-technical-report/images/completed_items_v2.png)
 
 The data included features like
@@ -50,7 +50,7 @@ I then ran a simple Random Forest (100 trees), which gave me the following resul
 
 | Model                     | Accuracy | Precision | Recall | F-1   |
 |---------------------------|----------|-----------|--------|-------|
-| Random Forest Classifier  | 0.877    |      |   |  |
+| Random Forest Classifier  | 0.860    |    0.877  | 0.95  | 0.911 |
 
 I chose to optimize for accuracy, since I thought that false positives were equally as important as false negatives for predicting the sale state of auction listings. Accuracy provides a simple metric for evaluating how many listings my models are classifying incorrectly. 
 
@@ -134,12 +134,17 @@ An increase of 3.7% from baseline. Modest improvement!
 
 ### Regression
 
-For regression, I experimented with linear Regression, including Lasso and Ridge regularization, Random Forest Regressor and SKLearn's Gradient Boosted Regressor, and found the best model to be the Gradient Boosted Regressor.
+For regression, I experimented with linear Regression, including Lasso and Ridge regularization, Random Forest Regressor and SKLearn's Gradient Boosted Regressor, and found the best model to be the Gradient Boosted Regressor. 
 
 
+| Model                     | Median Absolute Error ($)   |
+|---------------------------|----------|
+| Optimized Gradient Boosted Regressor | $25.82 (-$40.91), or 9.6% |
 
-
-
+At best, we were able to achieve 9.6% error on end price predictions for each item listing, on average through the entire dataset.
 
 
 # 5. Application
+
+
+
