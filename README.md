@@ -34,7 +34,47 @@ Pre-processing involved transforming the title text and the condition descriptio
 I also scaled all predictors to the same range so that I could compare model coefficients to each other directly.  
 
 
-# 3. Feature Engineering
+# 3. Modeling
+
+### Classification
+
+The classification problem involved predicting whether or not a given auction listing would sell.
+
+As a baseline, I used a model which simply predicted the majority class (1) for each listing, which resulted in the following scores:
+
+| Model                     | Accuracy | Precision | Recall | F-1   |
+|---------------------------|----------|-----------|--------|-------|
+| Majority Class Classifier | 0.854    | 0.854     | 1.000  | 0.917 |
+
+I then ran a simple Random Forest (100 trees), which gave me the following results for 3 fold CV:
+
+| Model                     | Accuracy | Precision | Recall | F-1   |
+|---------------------------|----------|-----------|--------|-------|
+| Random Forest Classifier  | 0.877    |      |   |  |
+
+I chose to optimize for accuracy, since I thought that false positives were equally as important as false negatives for predicting the sale state of auction listings. Accuracy provides a simple metric for evaluating how many listings my models are classifying incorrectly. 
+
+### Regression
+
+The regression problem was to predict the end price *for listings that sold*. I was not interested in predicting the end price of items that did not sell, since that did not fit into my goal of helping buyer's find over-valued or under-valued deals. If my model was trained on unsold data, then the regression results could not reliably be used to predict what price items will eventually *sell* at.
+
+As a baseline, I used the median price of all listings as my prediction for all listings. 
+
+| Model                     | Median Absolute Error ($)   |
+|---------------------------|----------|
+| Median End Price Prediction | $66.71 |
+
+I then ran a simple random forest regressor got the following result:
+
+| Model                     | Median Absolute Error ($)   |
+|---------------------------|----------|
+| Baseline Random Forest Regressor | $38.36 (-$28.35)  (13.3%) |
+
+The immediate modeling results provided a drop in MAE of 28.35 dollars, to land at an average error of 13.3% compared with the actual end price for each listing.
+
+Before moving onto ensembling various classifiers, I decided to attempt to create a feature in the hopes of increasing the accuracy of my model.
+
+# 4. Feature Engineering
 When I thought about what potential factors could contribute to a particular listing selling or not, I hypothesized that listings on ebay are affected by other similar listings. Specifically, I thought that the start price of auctions listed on ebay at the same time, or listed "concurrently", would affect their respective end prices, and wanted to explore this route.I thought that the current price of each listing at the time of listing might be more influential than the start price, but in the interest of time, I decided to focus on start price.
 
 I defined a listing to be concurrent with another listing if the second was posted before the second ended (without a restriction on the amount of concurrent time needed to qualify as a concurrent listing), and filtering in python. 
@@ -50,9 +90,56 @@ The essense of the code is along the lines of:
 
 After I had the top 5 concurrent, similar listings, I took the median start price, and used that as a feature to my models.
 
+Unfortunately, the new feature did not improve the error of my model:
+Accuracy score with feature: 0.825 (-2.9%)
+Median Absolute Error: $42.12 (+$3.76)
 
-# 5. Modeling & Model Validation
+When I plotted the median start price of concurrent, similar listings versus end price I found this:
+
+
+There is no correlation between the two, which suggests that people do not consider the *start price* of concurrent, similar listings when deciding to bid on items. However, my hunch is that people do consider the *current price* of concurrent, similar listings. Due to time constraints, I decided to move on instead of attempting to acquire the bidding history for each listing.
+
+# 5. Hyper-parameter Optimization
+
+To increase the accuracy of my modeling efforts, I decided to create an ensemble of classifiers for the classification task. I experimented with KNN, Logistic Regression, Gradient Boosted Trees, and Random Forest. Ultimatley I chose an ensemble of Gradient Boosted Trees, Random Forest, and Logistic Regression, averaging their respective probability calculations through a geometric mean, and using a decision threshold of 0.5.
+
+Although the feature-engineering was not as successful as hoped it would be, I knew that I could still reduce over-fitting and therefore reduce my test error by grid-searching for optimal hyper-parameters. I knew that I was over-fitting as my training and test error were significantly different. For the Random Forest classifier, my accuracy scores were 0.927 for training accuracy, and 0.877 for test accuracy. The difference of 5% told me that my model was not generalizing well enough, and that tuning hyper-parameters would potentially decrease the variance and the bias of my model.
+
+I used Amazon EC2 to run the grid-search and model fitting on a more powerful computer than I had available to use locally. 
+
+### Classification
+For the XGBoost model, I grid searched through:
+```python
+'max_depth': [3,5,7,9]
+```
+and found the best depth to be 7. 
+
+For logistic regression, adding a L2 (Ridge) regularization term with a weight of 0.8 provided the best results. 
+
+And for Random Forest, I grid searched through:
+```python
+'min_samples_split':[2, 4, 6],
+'min_samples_leaf':[1,3,5],
+'max_depth':[4, 8]
+```
+but found the best parameters to be the default parameters, (and 500 trees).
+
+When I combined these three models into an ensemble I was able to achieve the following scores:
+
+| Model                     | Accuracy | Precision | Recall | F-1   |
+|---------------------------|----------|-----------|--------|-------|
+| Ensemble (RF, LR, XGboost)  | 0.891 (+3.7%)  | 0.90  | 0.98  | 0.942 |
+
+An increase of 3.7% from baseline. Modest improvement!
+
+### Regression
+
+For regression, I experimented with linear Regression, including Lasso and Ridge regularization, Random Forest Regressor and SKLearn's Gradient Boosted Regressor, and found the best model to be the Gradient Boosted Regressor.
 
 
 
-# 6. Application
+
+
+
+
+# 5. Application
