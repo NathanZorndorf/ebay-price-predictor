@@ -1,7 +1,5 @@
 # Ebay Listing Optimizer With Machine Learning
 
-![Mock up of a web app that would use the research I've outlined in this report.](./capstone-technical-report/images/buyers_guide_example.png)
-
 If you've ever bought something on Ebay, you know that it can be difficult to know if a particular listing is a good deal or not. And if you're selling, it can be hard to determine which options will draw bidders to your auction. What if there was a way to increase the likelihood that you would sell your listing on ebay, just by swapping a few keywords in your title? What if there was a way to filter listings for only the best deals?
 
 To investiage these questions, I dug into actual ebay data and built a machine learning system to help sellers make more sales on ebay, and alert shoppers to the best deals so they can make smarter buying decisions and save money. In order to do that, I had to create models that could predict if an auction would sell or not (at least one person would bid), and if a listing would sell, how much it would sell for.
@@ -23,9 +21,6 @@ However, I suspected that start price and condition descriptions would be import
 
 Now that I had the necessary data in my database, I could import it into Python.
 ![Subset of columns of my data](./capstone-technical-report/images/example_dataframe.png)
-
-Taking a look at the end prices, we can see the distribution follows a power law. 
-![Price distribution of end prices of data](./capstone-technical-report/images/distribution_of_end_prices_auctions.png)
 
 
 # 2. Pre-Processing
@@ -158,7 +153,7 @@ Looking at the feature importances in the logistic regression model, we can see 
 'gently used', 1.369
 
 'Slightly used' and 'gently used' are two ways of saying the same thing, but one has a much higher probaiblity of sale. To test the affect of using 'gently used' we can look at the following case study:
-![Case Study](./capstone-technical-report/images/case_study.png)
+![Case Study](./capstone-technical-report/images/classification_case_study.png)
 
 The condition description - *Camera is in good, working condition with minor cosmetic wear* - is what we want to focus on. What happens if we include the terms "gently used" in the condition description?
 ![Gently used](./capstone-technical-report/images/gently_used.png)
@@ -200,21 +195,3 @@ Overall, I found this to be incredibly helpful learning experience, however I wo
 One avenue I would be interested in exploring is using listing images as features to my model. One way of doing this would be to train a nueral network using the greyscaled image matrix as an input and training on the sold state (1=sold, 0=unsold). My hypothesis is that higher quality images tend to sell more often than lower quality images, and if this were true, then the nueral network would learn to identify low quality images and high quality images. The network could be used to classify each image then, and use that classification as an input into the classification and regression models. Just one idea for how I might extend this project in the future.
 
 Thanks for reading! I hope you find this write-up useful in your own data science journey.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
