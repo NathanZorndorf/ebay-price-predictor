@@ -1,5 +1,6 @@
-# Ebay Listing Optimizer through Machine Learning
-![Mock up of a web app that would use the research I've outlined in this report.](.capstone-technical-report/images/buyers_guide_example.png)
+# Ebay Listing Optimizer With Machine Learning
+
+![Mock up of a web app that would use the research I've outlined in this report.](./capstone-technical-report/images/buyers_guide_example.png)
 
 If you've ever bought something on Ebay, you know that it can be difficult to know if a particular listing is a good deal or not. And if you're selling, it can be hard to determine which options will draw bidders to your auction. What if there was a way to increase the likelihood that you would sell your listing on ebay, just by swapping a few keywords in your title? What if there was a way to filter listings for only the best deals?
 
@@ -9,7 +10,7 @@ In this report, I'll discuss the decisions I made and show revelant code blocks 
 
 # 1. Web Scraping, Data Cleaning, Data Piping
 Using the Ebay API and a related Python wrapper [https://github.com/timotheus/ebaysdk-python], I collected data for 100,000 completed listings in the "Digital Camera" category for the past 3 months, and stored the data in a table within a postgres database. I ended up using  20,000 "Auction" type listings within the original dataset.
-![Sample of rows for a listing in Postgres database](.capstone-technical-report/images/completed_items_v2.png)
+![Sample of rows for a listing in Postgres database](./capstone-technical-report/images/completed_items_v2.png)
 
 The data included features like
 
@@ -21,10 +22,10 @@ The data included features like
 However, I suspected that start price and condition descriptions would be important features. Since they were not available through the API, I created a scraper with Scrapy to fetch URLs from my database, scrape the start price and condition, and store it back into my database.
 
 Now that I had the necessary data in my database, I could import it into Python.
-![Subset of columns of my data](.capstone-technical-report/images/example_dataframe.png)
+![Subset of columns of my data](./capstone-technical-report/images/example_dataframe.png)
 
 Taking a look at the end prices, we can see the distribution follows a power law. 
-![Price distribution of end prices of data](.capstone-technical-report/images/distribution_of_end_prices_auctions.png)
+![Price distribution of end prices of data](./capstone-technical-report/images/distribution_of_end_prices_auctions.png)
 
 
 # 2. Pre-Processing
@@ -95,7 +96,7 @@ Accuracy score with feature: 0.825 (-2.9%)
 Median Absolute Error: $42.12 (+$3.76)
 
 When I plotted the median start price of concurrent, similar listings versus end price I found this:
-
+![Concurrent Median start price vs. End Price](./capstone-technical-report/images/csm_start_price.png)
 
 There is no correlation between the two, which suggests that people do not consider the *start price* of concurrent, similar listings when deciding to bid on items. However, my hunch is that people do consider the *current price* of concurrent, similar listings. Due to time constraints, I decided to move on instead of attempting to acquire the bidding history for each listing.
 
@@ -145,6 +146,75 @@ At best, we were able to achieve 9.6% error on end price predictions for each it
 
 
 # 5. Application
+
+### Seller Listing Optimizer (Classification)
+
+It's a neat ML exercise to try to predict whether an auction is going to sell or not, but how is it useful to shoppers? One way is that, by looking at feature weights in the logistic regression classifier, we can determine which features increase or decrease the probability of sale of a listing.
+
+For instance, it is possible that certain words in the title or condition description may increase the probability of sale, and in fact, that is the case. 
+
+Looking at the feature importances in the logistic regression model, we can see that some words are associated with positive increases in probability:
+'slightly used', 0.649
+'gently used', 1.369
+
+'Slightly used' and 'gently used' are two ways of saying the same thing, but one has a much higher probaiblity of sale. To test the affect of using 'gently used' we can look at the following case study:
+![Case Study](./capstone-technical-report/images/case_study.png)
+
+The condition description - *Camera is in good, working condition with minor cosmetic wear* - is what we want to focus on. What happens if we include the terms "gently used" in the condition description?
+![Gently used](./capstone-technical-report/images/gently_used.png)
+
+As you can see from the bar chart above, including the term "gently used" in the condition description, causes the model to predict a 3% higher probability of sale for this particular item.
+
+Although it is only a modest increase, the example is only to show that features can be tweaked to increase a listings probability of sale.
+
+### Over-Valued and Under-Valued Item Alert (Regression)
+
+On the buyer's side of things, predicting end price of an auction is useful because this gives us an idea of the value of items on Ebay. If we know the going price for an auction on ebay, then we can alert buyers to whether or not the item is under or over-valued at the current bid price. If it's over-valued, the buyer can avoid that listing and instead wait for a listing that is under-valued. The buyer can also simply set a maximum bid ceiling equal to the predicted end price, and feel comfortable knowing that they won't be paying more than the market rate for that item.
+
+Let's take a look at an example:
+![cyber shot](./capstone-technical-report/images/cyber_shot.png)
+
+This Cyber Shot digital camera sold for $369.00, but did the buyer get a good deal?
+
+Let's investigate. 
+
+The actual end price for the camera was $369.00, but the *predicted* end price, according to our model was $314.90.
+If we factor in our 9.6% average error, then our model could be off by $314.90 + 9.6% = $345.13, in a worst case scenario in which the error increases the predicted price.
+
+In this scenario, the buyer actually overpaid by $369.00 - $345.13 = $23.87.
+
+If the buyer had waited to bid on another listing, they could have potentially saved $24!
+
+If we aggregate these findings to to all sold listings in our database, we find that 24.4%, or 3,959 listings are found to be over-priced. The average amount over-paid on each listing is $27.85, which means that all buyers of digital cameras on ebay could have collectively saved $110,277. That's a nice chunk of change!
+
+Below is a mock up of a web app that could use the models to alert buyers to the value of items they are browsing.
+
+![Mock up of a web app that would use the research I've outlined in this report.](./capstone-technical-report/images/buyers_guide_example.png)
+
+Buyers would know which listings are OK to bid on, and which they should avoid in order to maximize their spending power.
+
+# 6. Conclusion
+
+Overall, I found this to be incredibly helpful learning experience, however I would want to reduce the regression error to below 5% before I would use the model myself. 
+
+One avenue I would be interested in exploring is using listing images as features to my model. One way of doing this would be to train a nueral network using the greyscaled image matrix as an input and training on the sold state (1=sold, 0=unsold). My hypothesis is that higher quality images tend to sell more often than lower quality images, and if this were true, then the nueral network would learn to identify low quality images and high quality images. The network could be used to classify each image then, and use that classification as an input into the classification and regression models. Just one idea for how I might extend this project in the future.
+
+Thanks for reading! I hope you find this write-up useful in your own data science journey.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
